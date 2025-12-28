@@ -10,7 +10,7 @@
 
    <?= $this->include("templates/css") ?>
 
-   <title><?= $title ?></title>
+   <title><?= $title ?? 'Absensi Sekolah QR Code' ?></title>
 
    <style>
       .bg {

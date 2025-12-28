@@ -21,7 +21,7 @@ class App extends BaseConfig
      * explicitly and never rely on auto-guessing, especially in production
      * environments.
      */
-    public string $baseURL = '';
+    public string $baseURL = 'http://localhost/absensi/public/';
 
     /**
      * Allowed Hostnames in the Site URL other than the hostname in the baseURL.
@@ -64,7 +64,7 @@ class App extends BaseConfig
      *
      * WARNING: If you set this to 'PATH_INFO', URIs will always be URL-decoded!
      */
-    public string $uriProtocol = 'PATH_INFO';
+    public string $uriProtocol = 'REQUEST_URI';
 
     /**
      * --------------------------------------------------------------------------
@@ -177,19 +177,4 @@ class App extends BaseConfig
      * @see http://www.w3.org/TR/CSP/
      */
     public bool $CSPEnabled = false;
-
-    public function __construct()
-    {
-        parent::__construct();
-
-        // Check if running via CLI or if SERVER variables are missing
-        if (is_cli() || !isset($_SERVER['HTTP_HOST'])) {
-            $this->baseURL = 'http://localhost:8080/';
-            return;
-        }
-
-        $protocol = isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) === 'on' ? 'https' : 'http';
-        $host = $_SERVER['HTTP_HOST'];
-        $this->baseURL = $protocol . '://' . $host . '/';
-    }
 }
