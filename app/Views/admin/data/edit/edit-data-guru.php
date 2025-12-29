@@ -6,7 +6,7 @@
          <div class="col-lg-12 col-md-12">
             <div class="card">
                <div class="card-header card-header-success">
-                  <h4 class="card-title"><b>Form Edit Guru</b></h4>
+                  <h4 class="card-title"><b>Form Edit Dosen</b></h4>
 
                </div>
                <div class="card-body mx-5 my-3">
@@ -22,19 +22,19 @@
                      </div>
                   <?php endif; ?>
 
-                  <form action="<?= base_url('admin/guru/edit'); ?>" method="post">
+                  <form action="<?= base_url('admin/dosen/edit'); ?>" method="post">
                      <?= csrf_field() ?>
                      <?php $validation = \Config\Services::validation(); ?>
 
-                     <input type="hidden" name="id" value="<?= $data['id_guru'] ?>">
+                     <input type="hidden" name="id" value="<?= $data['id_dosen'] ?>">
 
                      <div class="form-group mt-4">
-                        <label for="nuptk">NUPTK</label>
-                        <input type="text" id="nuptk"
-                           class="form-control <?= $validation->getError('nuptk') ? 'is-invalid' : ''; ?>" name="nuptk"
-                           placeholder="1234" value="<?= old('nuptk') ?? $oldInput['nuptk'] ?? $data['nuptk'] ?>">
+                        <label for="nip">NIP</label>
+                        <input type="text" id="nip"
+                           class="form-control <?= $validation->getError('nip') ? 'is-invalid' : ''; ?>" name="nip"
+                           placeholder="1234" value="<?= old('nip') ?? $oldInput['nip'] ?? $data['nip'] ?>">
                         <div class="invalid-feedback">
-                           <?= $validation->getError('nuptk'); ?>
+                           <?= $validation->getError('nip'); ?>
                         </div>
                      </div>
 
@@ -42,7 +42,7 @@
                         <label for="nama">Nama Lengkap</label>
                         <input type="text" id="nama"
                            class="form-control <?= $validation->getError('nama') ? 'is-invalid' : ''; ?>" name="nama"
-                           placeholder="Your Name" value="<?= old('nama') ?? $oldInput['nama'] ?? $data['nama_guru'] ?>"
+                           placeholder="Your Name" value="<?= old('nama') ?? $oldInput['nama'] ?? $data['nama_dosen'] ?>"
                            required>
                         <div class="invalid-feedback">
                            <?= $validation->getError('nama'); ?>
