@@ -4,7 +4,7 @@ namespace App\Models;
 
 use CodeIgniter\Model;
 
-class KelasModel extends BaseModel
+class MatkulModel extends BaseModel
 {
    protected $builder;
 
@@ -91,7 +91,7 @@ class KelasModel extends BaseModel
          return array();
       }
 
-      return $this->builder->whereIn('tb_kelas.id_jurusan', $jurusanIds, false)->countAllResults();
+      return $this->builder->whereIn('tb_matkul.id_jurusan', $jurusanIds, false)->countAllResults();
    }
 
    public function deleteMatkul($id)
