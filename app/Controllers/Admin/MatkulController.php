@@ -6,11 +6,11 @@ use App\Models\JurusanModel;
 use App\Models\MatkulModel;
 use App\Controllers\BaseController;
 
-class KelasController extends BaseController
+class MatkulController extends BaseController
 {
     protected MatkulModel $matkulModel;
     protected JurusanModel $jurusanModel;
-    protected \App\Models\GuruModel $guruModel;
+    protected \App\Models\DosenModel $dosenModel;
 
     public function initController(\CodeIgniter\HTTP\RequestInterface $request, \CodeIgniter\HTTP\ResponseInterface $response, \Psr\Log\LoggerInterface $logger)
     {
@@ -34,7 +34,7 @@ class KelasController extends BaseController
 
         $data = [
             'title' => 'Matkul & Jurusan',
-            'ctx' => 'kelas',
+            'ctx' => 'matkul',
         ];
 
         return view('admin/matkul/index', $data);
@@ -66,14 +66,14 @@ class KelasController extends BaseController
      *
      * @return mixed
      */
-    public function tambahKelas()
+    public function tambahMatkul()
     {
         $data['ctx'] = 'matkul';
-        $data['title'] = 'Tambah Data Kelas';
+        $data['title'] = 'Tambah Data Matkul';
         $data['jurusan'] = $this->jurusanModel->findAll();
         $data['dosen'] = $this->dosenModel->getAllDosen();
 
-        return view('/admin/kelas/create', $data);
+        return view('/admin/matkul/create', $data);
     }
 
     /**
@@ -86,7 +86,7 @@ class KelasController extends BaseController
         $val = \Config\Services::validation();
         $val->setRule('tingkat', 'Tingkat', 'required|max_length[10]');
         $val->setRule('id_jurusan', 'Jurusan', 'required|numeric');
-        $val->setRule('index_kelas', 'Index', 'required|max_length[5]');
+        $val->setRule('index_matkul', 'Index', 'required|max_length[5]');
         $val->setRule('id_dosbing', 'Dosen Pembimbing', 'permit_empty|numeric');
 
         if (!$this->validate(getValRules($val))) {
@@ -110,13 +110,13 @@ class KelasController extends BaseController
      */
     public function editMatkul($id)
     {
-        $data['title'] = 'Edit Kelas';
+        $data['title'] = 'Edit Matkul';
         $data['ctx'] = 'matkul';
         $data['jurusan'] = $this->jurusanModel->findAll();
         $data['dosen'] = $this->dosenModel->getAllDosen();
-        $data['kelas'] = $this->matkulModel->getKelas($id);
-        if (empty($data['kelas'])) {
-            return redirect()->to('admin/kelas');
+        $data['matkul'] = $this->matkulModel->getMatkul($id);
+        if (empty($data['matkul'])) {
+            return redirect()->to('admin/matkul');
         }
 
         return view('/admin/matkul/edit', $data);
@@ -127,19 +127,19 @@ class KelasController extends BaseController
      *
      * @return mixed
      */
-    public function editKelasPost()
+    public function editMatkulPost()
     {
         $val = \Config\Services::validation();
         $val->setRule('tingkat', 'Tingkat', 'required|max_length[10]');
         $val->setRule('id_jurusan', 'Jurusan', 'required|numeric');
-        $val->setRule('index_kelas', 'Index', 'required|max_length[5]');
+        $val->setRule('index_matkul', 'Index', 'required|max_length[5]');
         $val->setRule('id_dosbing', 'Dosen Pembimbing', 'permit_empty|numeric');
         if (!$this->validate(getValRules($val))) {
             $this->session->setFlashdata('errors', $val->getErrors());
             return redirect()->back();
         } else {
             $id = inputPost('id');
-            if ($this->matkulModel->editKelas($id)) {
+            if ($this->matkulModel->editMatkul($id)) {
                 $this->session->setFlashdata('success', 'Edit data berhasil');
                 return redirect()->to('admin/matkul');
             } else {
@@ -157,14 +157,14 @@ class KelasController extends BaseController
     public function deleteMatkulPost($id = null)
     {
         $id = inputPost('id');
-        $kelas = $this->matkulModel->getKelas($id);
+        $matkul = $this->matkulModel->getMatkul($id);
         if (!empty($matkul)) {
             $mahasiswaModel = new \App\Models\MahasiswaModel();
-            if (!empty($mahasiswaModel->getMahasiswaCountByKelas($id))) {
-                $this->session->setFlashdata('error', 'Kelas Masih Memiliki Mahasiswa Aktif');
+            if (!empty($mahasiswaModel->getMahasiswaCountByMatkul($id))) {
+                $this->session->setFlashdata('error', 'Matkul Masih Memiliki Mahasiswa Aktif');
                 exit();
             }
-            if ($this->matkulModel->deleteKelas($id)) {
+            if ($this->matkulModel->deleteMatkul($id)) {
                 $this->session->setFlashdata('success', 'Data berhasil dihapus');
             } else {
                 $this->session->setFlashdata('error', 'Gagal menghapus data');
