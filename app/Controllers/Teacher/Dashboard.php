@@ -115,7 +115,7 @@ class Dashboard extends BaseController
         $namamatkul = $this->request->getVar('matkul'); // Just passed back to view
         $tanggal = $this->request->getVar('tanggal');
 
-        $result = $this->presensiMahasiswaModel->getPresensiByMatkulTanggal($idMatkul, $tanggal);
+        $result = $this->presensiMahasiswaModel->getPresensiByMatkulTanggal($idmatkul, $tanggal);
         $lewat = Time::parse($tanggal)->isAfter(Time::today());
 
         $data = [
