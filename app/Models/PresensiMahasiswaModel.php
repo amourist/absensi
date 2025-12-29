@@ -12,7 +12,7 @@ class PresensiSiswaModel extends Model implements PresensiInterface
    protected $primaryKey = 'id_presensi';
 
    protected $allowedFields = [
-      'id_siswa',
+      'id_mahasiswa',
       'id_kelas',
       'tanggal',
       'jam_masuk',
@@ -21,12 +21,11 @@ class PresensiSiswaModel extends Model implements PresensiInterface
       'keterangan'
    ];
 
-   protected $table = 'tb_presensi_siswa';
+   protected $table = 'tb_presensi_mahasiswa';
 
    public function cekAbsen(string|int $id, string|Time $date)
    {
-      $result = $this->where(['id_siswa' => $id, 'tanggal' => $date])->first();
-
+      $result = $this->where(['id_mahasiswa' => $id, 'tanggal' => $date])->first();
       if (empty($result)) return false;
 
       return $result[$this->primaryKey];
@@ -35,7 +34,7 @@ class PresensiSiswaModel extends Model implements PresensiInterface
    public function absenMasuk(string $id,  $date, $time, $idKelas = '')
    {
       $this->save([
-         'id_siswa' => $id,
+         'id_mahasiswa' => $id,
          'id_kelas' => $idKelas,
          'tanggal' => $date,
          'jam_masuk' => $time,
@@ -53,9 +52,9 @@ class PresensiSiswaModel extends Model implements PresensiInterface
       ]);
    }
 
-   public function getPresensiByIdSiswaTanggal($idSiswa, $date)
+   public function getPresensiByIdMahasiswaTanggal($idMahasiswa, $date)
    {
-      return $this->where(['id_siswa' => $idSiswa, 'tanggal' => $date])->first();
+      return $this->where(['id_mahasiswa' => $idMahasiswa, 'tanggal' => $date])->first();
    }
 
    public function getPresensiById(string $idPresensi)
@@ -65,11 +64,11 @@ class PresensiSiswaModel extends Model implements PresensiInterface
 
    public function getPresensiByKelasTanggal($idKelas, $tanggal)
    {
-      return $this->setTable('tb_siswa')
+      return $this->setTable('tb_mahasiswa')
          ->select('*')
          ->join(
-            "(SELECT id_presensi, id_siswa AS id_siswa_presensi, tanggal, jam_masuk, jam_keluar, id_kehadiran, keterangan FROM tb_presensi_siswa)tb_presensi_siswa",
-            "{$this->table}.id_siswa = tb_presensi_siswa.id_siswa_presensi AND tb_presensi_siswa.tanggal = '$tanggal'",
+            "(SELECT id_presensi, id_mahasiswa AS id_mahasiswa_presensi, tanggal, jam_masuk, jam_keluar, id_kehadiran, keterangan FROM tb_presensi_mahasiswa)tb_presensi_mahasiswa",
+            "{$this->table}.id_mahasiswa = tb_presensi_mahasiswa.id_mahasiswa_presensi AND tb_presensi_mahasiswa.tanggal = '$tanggal'",
             'left'
          )
          ->join(
@@ -78,15 +77,15 @@ class PresensiSiswaModel extends Model implements PresensiInterface
             'left'
          )
          ->where("{$this->table}.id_kelas = $idKelas")
-         ->orderBy("nama_siswa")
+         ->orderBy("nama_mahasiswa")
          ->findAll();
    }
 
    public function getPresensiByKehadiran(string $idKehadiran, $tanggal)
    {
       $this->join(
-         'tb_siswa',
-         "tb_presensi_siswa.id_siswa = tb_siswa.id_siswa AND tb_presensi_siswa.tanggal = '$tanggal'",
+         'tb_mahasiswa',
+         "tb_presensi_mahasiswa.id_mahasiswa = tb_mahasiswa.id_mahasiswa AND tb_presensi_mahasiswa.tanggal = '$tanggal'",
          'right'
       );
 
@@ -103,14 +102,14 @@ class PresensiSiswaModel extends Model implements PresensiInterface
 
          return $filteredResult;
       } else {
-         $this->where(['tb_presensi_siswa.id_kehadiran' => $idKehadiran]);
+         $this->where(['tb_presensi_mahasiswa.id_kehadiran' => $idKehadiran]);
          return $this->findAll();
       }
    }
 
    public function updatePresensi(
       $idPresensi,
-      $idSiswa,
+      $idMahasiswa,
       $idKelas,
       $tanggal,
       $idKehadiran,
@@ -118,10 +117,10 @@ class PresensiSiswaModel extends Model implements PresensiInterface
       $jamKeluar,
       $keterangan
    ) {
-      $presensi = $this->getPresensiByIdSiswaTanggal($idSiswa, $tanggal);
+      $presensi = $this->getPresensiByIdMahasiswaTanggal($idMahasiswa, $tanggal);
 
       $data = [
-         'id_siswa' => $idSiswa,
+         'id_mahasiswa' => $idMahasiswa,
          'id_kelas' => $idKelas,
          'tanggal' => $tanggal,
          'id_kehadiran' => $idKehadiran,
