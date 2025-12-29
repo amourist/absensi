@@ -6,13 +6,13 @@
       <div class="col-lg-12 col-md-12">
         <div class="card">
           <div class="card-header card-header-primary">
-            <h4 class="card-title"><b>Form Edit Kelas</b></h4>
+            <h4 class="card-title"><b>Form Edit Mata Kuliah</b></h4>
           </div>
           <div class="card-body mx-5 my-3">
 
-            <form action="<?= base_url('admin/kelas/editKelasPost'); ?>" method="post">
+            <form action="<?= base_url('admin/matkul/editMatkulsPost'); ?>" method="post">
               <?= csrf_field() ?>
-              <input type="hidden" name="id" value="<?= esc($kelas->id_kelas); ?>">
+              <input type="hidden" name="id" value="<?= esc($matkul->id_matkul); ?>">
               <input type="hidden" name="back_url" value="<?= currentFullURL(); ?>">
 
               <div class="row">
@@ -29,10 +29,10 @@
                 </div>
                 <div class="col-md-6">
                   <div class="form-group mt-4">
-                    <label for="index_kelas">Index Kelas</label>
-                    <input type="text" id="index_kelas"
-                      class="form-control <?= invalidFeedback('index_kelas') ? 'is-invalid' : ''; ?>" name="index_kelas"
-                      placeholder="'1', '2', 'A'" value="<?= old('index_kelas') ?? $kelas->index_kelas ?? '' ?>"
+                    <label for="index_kelas">Index Mata Kuliah</label>
+                    <input type="text" id="index_matkul"
+                      class="form-control <?= invalidFeedback('index_matkul') ? 'is-invalid' : ''; ?>" name="index_kelas"
+                      placeholder="'1', '2', 'A'" value="<?= old('index_matkul') ?? $kelas->index_kelas ?? '' ?>"
                       required>
                     <div class="invalid-feedback">
                       <?= invalidFeedback('index_kelas'); ?>

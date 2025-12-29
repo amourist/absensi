@@ -12,20 +12,20 @@
                 <div class="nav-tabs-navigation">
                   <div class="row">
                     <div class="col-md-4 col-lg-5">
-                      <h4 class="card-title"><b>Daftar Kelas</b></h4>
+                      <h4 class="card-title"><b>Daftar Mata Kuliah/b></h4>
                       <p class="card-category">Angkatan <?= $generalSettings->school_year; ?></p>
                     </div>
 
                     <div class="col-auto row">
                       <div class="col-12 col-sm-auto nav nav-tabs">
-                        <a class="btn-custom-tools" id="tabBtn" href="<?= base_url('admin/kelas/tambah'); ?>">
-                          <i class="material-icons">add</i> Tambah data kelas
+                        <a class="btn-custom-tools" id="tabBtn" href="<?= base_url('admin/matkul/tambah'); ?>">
+                          <i class="material-icons">add</i> Tambah data Mata Kuliah
                           <div class="ripple-container"></div>
                         </a>
 
                       </div>
                       <div class="col-12 col-sm-auto nav nav-tabs">
-                        <a class="btn-custom-tools" id="refreshBtn" onclick="fetchKelasJurusanData('kelas', '#dataKelas')" href="javascript:void(0)">
+                        <a class="btn-custom-tools" id="refreshBtn" onclick="fetchKelasJurusanData('kelas', '#dataMatkul')" href="javascript:void(0)">
                           <i class="material-icons">refresh</i> Refresh
 
                         </a>
@@ -34,7 +34,7 @@
                   </div>
                 </div>
               </div>
-              <div class="card-data" id="dataKelas">
+              <div class="card-data" id="dataMatkul">
               </div>
             </div>
           </div>
@@ -77,7 +77,7 @@
 
 <script>
   document.addEventListener('DOMContentLoaded', function() {
-    fetchKelasJurusanData('kelas', '#dataKelas');
+    fetchKelasJurusanData('matkul', '#dataMatkul');
     fetchKelasJurusanData('jurusan', '#dataJurusan');
   });
 
