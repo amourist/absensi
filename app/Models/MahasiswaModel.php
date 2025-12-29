@@ -25,7 +25,7 @@ class MahasiswaModel extends Model
 
    public function cekMahasiswa(string $unique_code)
    {
-      $this->select('tb_mahasiswa.*, tb_matkul.tingkat, tb_matkul.index_matkul, tb_jurusan.jurusan, CONCAT(tb_matkul.tingkat, " ", tb_jurusan.jurusan, " ", tb_matkul.index_matkul) as matkul')
+      $this->select('tb_mahasiswa.*, tb_matkul.semester, tb_matkul.index_matkul, tb_jurusan.jurusan, CONCAT(tb_matkul.semester, " ", tb_jurusan.jurusan, " ", tb_matkul.index_matkul) as matkul')
          ->join(
             'tb_matkul',
             'tb_matkul.id_matkul = tb_mahasiswa.id_matkul',
@@ -47,7 +47,7 @@ class MahasiswaModel extends Model
 
    public function getAllMahasiswaWithmatkul($matkul = null, $jurusan = null)
    {
-      $query = $this->select('tb_mahasiswa.*, tb_matkul.tingkat, tb_matkul.index_matkul, tb_jurusan.jurusan, CONCAT(tb_matkul.tingkat, " ", tb_jurusan.jurusan, " ", tb_matkul.index_matkul) as matkul')
+      $query = $this->select('tb_mahasiswa.*, tb_matkul.semester, tb_matkul.index_matkul, tb_jurusan.jurusan, CONCAT(tb_matkul.semester, " ", tb_jurusan.jurusan, " ", tb_matkul.index_matkul) as matkul')
          ->join(
             'tb_matkul',
             'tb_matkul.id_matkul = tb_mahasiswa.id_matkul',
@@ -59,11 +59,11 @@ class MahasiswaModel extends Model
          );
 
       if (!empty($matkul) && !empty($jurusan)) {
-         $query = $this->where(['tb_jurusan.jurusan' => $jurusan, 'tb_matkul.tingkat' => $matkul]);
+         $query = $this->where(['tb_jurusan.jurusan' => $jurusan, 'tb_matkul.semester' => $matkul]);
       } else if (empty($matkul) && !empty($jurusan)) {
          $query = $this->where(['tb_jurusan.jurusan' => $jurusan]);
       } else if (!empty($matkul) && empty($jurusan)) {
-         $query = $this->where(['tb_matkul.tingkat' => $matkul]);
+         $query = $this->where(['tb_matkul.semester' => $matkul]);
       } else {
          $query = $this;
       }
@@ -73,7 +73,7 @@ class MahasiswaModel extends Model
 
    public function getMahasiswaByMatkul($id_matkul)
    {
-      return $this->select('tb_mahasiswa.*, tb_matkul.tingkat, tb_matkul.index_matkul, tb_jurusan.jurusan, CONCAT(tb_matkul.tingkat, " ", tb_jurusan.jurusan, " ", tb_matkul.index_matkul) as matkul')
+      return $this->select('tb_mahasiswa.*, tb_matkul.semester, tb_matkul.index_matkul, tb_jurusan.jurusan, CONCAT(tb_matkul.semester, " ", tb_jurusan.jurusan, " ", tb_matkul.index_matkul) as matkul')
          ->join(
             'tb_matkul',
             'tb_matkul.id_matkul = tb_mahasiswa.id_matkul',
@@ -111,7 +111,7 @@ class MahasiswaModel extends Model
       ]);
    }
 
-   public function getMahasiswaCountByMatkul($matkulId)
+   public function getMahasiswaCountBymatkul($matkulId)
    {
       $tree = array();
       $matkulId = cleanNumber($matkulId);

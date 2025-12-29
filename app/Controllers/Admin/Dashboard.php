@@ -6,7 +6,7 @@ use App\Controllers\BaseController;
 
 use App\Models\DosenModel;
 use App\Models\MahasiswaModel;
-use App\Models\KelasModel;
+use App\Models\MatkulModel;
 use App\Models\PetugasModel;
 use App\Models\PresensiDosenModel;
 use App\Models\PresensiMahasiswaModel;
@@ -18,7 +18,7 @@ class Dashboard extends BaseController
    protected MahasiswaModel $mahasiswaModel;
    protected DosenModel $dosenModel;
 
-   protected KelasModel $KelasModel;
+   protected MatkulModel $MatkulModel;
 
    protected PresensiMahasiswaModel $presensiMahasiswaModel;
    protected PresensiDosenModel $presensiDosenModel;
@@ -29,7 +29,7 @@ class Dashboard extends BaseController
    {
       $this->mahasiswaModel = new MahasiswaModel();
       $this->dosenModel = new DosenModel();
-      $this->KelasModel = new KelasModel();
+      $this->MatkulModel = new MatkulModel();
       $this->presensiMahasiswaModel = new PresensiMahasiswaModel();
       $this->presensiDosenModel = new PresensiDosenModel();
       $this->petugasModel = new PetugasModel();
@@ -88,10 +88,10 @@ class Dashboard extends BaseController
          'title' => 'Dashboard',
          'ctx' => 'dashboard',
 
-         'siswa' => $this->mahasiswaModel->getAllMahasiswaWithKelas(),
+         'siswa' => $this->mahasiswaModel->getAllMahasiswaWithmatkul(),
          'guru' => $this->dosenModel->getAllDosen(),
 
-         'kelas' => $this->KelasModel->getDataKelas(),
+         'kelas' => $this->MatkulModel->getDataMatkul(),
 
          'dateRange' => $dateRange,
          'dateNow' => $now->toLocalizedString('d MMMM Y'),
