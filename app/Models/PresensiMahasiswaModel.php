@@ -7,7 +7,7 @@ use CodeIgniter\I18n\Time;
 use CodeIgniter\Model;
 use App\Libraries\enums\Kehadiran;
 
-class PresensiSiswaModel extends Model implements PresensiInterface
+class PresensiMahasiswaModel extends Model implements PresensiInterface
 {
    protected $primaryKey = 'id_presensi';
 
