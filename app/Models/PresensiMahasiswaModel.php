@@ -13,7 +13,7 @@ class PresensiSiswaModel extends Model implements PresensiInterface
 
    protected $allowedFields = [
       'id_mahasiswa',
-      'id_kelas',
+      'id_matkul',
       'tanggal',
       'jam_masuk',
       'jam_keluar',
@@ -31,11 +31,11 @@ class PresensiSiswaModel extends Model implements PresensiInterface
       return $result[$this->primaryKey];
    }
 
-   public function absenMasuk(string $id,  $date, $time, $idKelas = '')
+   public function absenMasuk(string $id,  $date, $time, $idmatkul = '')
    {
       $this->save([
          'id_mahasiswa' => $id,
-         'id_kelas' => $idKelas,
+         'id_matkul' => $idmatkul,
          'tanggal' => $date,
          'jam_masuk' => $time,
          // 'jam_keluar' => '',
@@ -62,7 +62,7 @@ class PresensiSiswaModel extends Model implements PresensiInterface
       return $this->where([$this->primaryKey => $idPresensi])->first();
    }
 
-   public function getPresensiByKelasTanggal($idKelas, $tanggal)
+   public function getPresensiByMatkulTanggal($idMatkul, $tanggal)
    {
       return $this->setTable('tb_mahasiswa')
          ->select('*')
@@ -76,7 +76,7 @@ class PresensiSiswaModel extends Model implements PresensiInterface
             'tb_presensi_siswa.id_kehadiran = tb_kehadiran.id_kehadiran',
             'left'
          )
-         ->where("{$this->table}.id_kelas = $idKelas")
+         ->where("{$this->table}.id_matkul = $idMatkul")
          ->orderBy("nama_mahasiswa")
          ->findAll();
    }
@@ -110,7 +110,7 @@ class PresensiSiswaModel extends Model implements PresensiInterface
    public function updatePresensi(
       $idPresensi,
       $idMahasiswa,
-      $idKelas,
+      $idMatkul,
       $tanggal,
       $idKehadiran,
       $jamMasuk,
@@ -121,7 +121,7 @@ class PresensiSiswaModel extends Model implements PresensiInterface
 
       $data = [
          'id_mahasiswa' => $idMahasiswa,
-         'id_kelas' => $idKelas,
+         'id_matkul' => $idMatkul,
          'tanggal' => $tanggal,
          'id_kehadiran' => $idKehadiran,
          'keterangan' => $keterangan ?? $presensi['keterangan'] ?? ''
