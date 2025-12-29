@@ -35,32 +35,32 @@
         <div class="card">
           <div class="card-header card-header-danger">
             <h4 class="card-title"><b>Generate QR Code</b></h4>
-            <p class="card-category">Generate QR berdasarkan kode unik data siswa/guru</p>
+            <p class="card-category">Generate QR berdasarkan kode unik data mahasiswa/dosen</p>
           </div>
           <div class="card-body">
             <div class="row">
               <div class="col-md-6">
                 <div class="card">
                   <div class="card-body">
-                    <h4 class="text-primary"><b>Data Siswa</b></h4>
-                    <p>Total jumlah siswa : <b><?= count($siswa); ?></b>
+                    <h4 class="text-primary"><b>Data Mahasiswa</b></h4>
+                    <p>Total jumlah mahasiswa : <b><?= count($mahasiswa); ?></b>
                       <br>
-                      <a href="<?= base_url('admin/siswa'); ?>">Lihat data</a>
+                      <a href="<?= base_url('admin/mahasiswa'); ?>">Lihat data</a>
                     </p>
                     <div class="row px-2">
                       <div class="col-12 col-xl-6 px-1">
-                        <button onclick="generateAllQrSiswa()" class="btn btn-primary p-2 px-md-4 w-100">
+                        <button onclick="generateAllQrMahasiswa()" class="btn btn-primary p-2 px-md-4 w-100">
                           <div class="d-flex align-items-center justify-content-center" style="gap: 12px;">
                             <div>
                               <i class="material-icons" style="font-size: 24px;">qr_code</i>
                             </div>
                             <div>
                               <h4 class="d-inline font-weight-bold">Generate All</h4>
-                              <div id="progressSiswa" class="d-none mt-2">
-                                <span id="progressTextSiswa"></span>
-                                <i id="progressSelesaiSiswa" class="material-icons d-none" class="d-none">check</i>
-                                <div class="progress progress-siswa">
-                                  <div id="progressBarSiswa" class="progress-bar my-progress-bar bg-white"
+                              <div id="progressMahasiswa" class="d-none mt-2">
+                                <span id="progressTextMahasiswa"></span>
+                                <i id="progressSelesaiMahasiswa" class="material-icons d-none" class="d-none">check</i>
+                                <div class="progress progress-mahasiswa">
+                                  <div id="progressBarMahasiswa" class="progress-bar my-progress-bar bg-white"
                                     style="width: 0%;" role="progressbar" aria-valuenow="" aria-valuemin=""
                                     aria-valuemax=""></div>
                                 </div>
@@ -70,7 +70,7 @@
                         </button>
                       </div>
                       <div class="col-12 col-xl-6 px-1">
-                        <a href="<?= base_url('admin/qr/siswa/download'); ?>" class="btn btn-primary p-2 px-md-4 w-100">
+                        <a href="<?= base_url('admin/qr/mahasiswa/download'); ?>" class="btn btn-primary p-2 px-md-4 w-100">
                           <div class="d-flex align-items-center justify-content-center" style="gap: 12px;">
                             <div>
                               <i class="material-icons" style="font-size: 24px;">cloud_download</i>
@@ -86,20 +86,20 @@
                     </div>
                     <hr>
                     <br>
-                    <h4 class="text-primary"><b>Generate per kelas</b></h4>
+                    <h4 class="text-primary"><b>Generate per Mata Kuliah</b></h4>
                     <form action="<?= base_url('admin/qr/siswa/download'); ?>" method="get">
-                      <select name="id_kelas" id="kelasSelect" class="custom-select mb-3" required>
-                        <option value="">--Pilih kelas--</option>
-                        <?php foreach ($kelas as $value): ?>
-                          <option id="idKelas<?= $value['id_kelas']; ?>" value="<?= $value['id_kelas']; ?>">
-                            <?= $value['kelas']; ?>
+                      <select name="id_matkul" id="matkulSelect" class="custom-select mb-3" required>
+                        <option value="">--Pilih mata Kuliah--</option>
+                        <?php foreach ($matkul as $value): ?>
+                          <option id="idMatkul<?= $value['id_matkul']; ?>" value="<?= $value['id_matkul']; ?>">
+                            <?= $value['matkul']; ?>
                           </option>
                         <?php endforeach; ?>
                       </select>
                       <b class="text-danger mt-2" id="textErrorKelas"></b>
                       <div class="row px-2">
                         <div class="col-12 col-xl-6 px-1">
-                          <button type="button" onclick="generateQrSiswaByKelas()"
+                          <button type="button" onclick="generateQrMahasiswaByKelas()"
                             class="btn btn-primary p-2 px-md-4 w-100">
                             <div class="d-flex align-items-center justify-content-center" style="gap: 12px;">
                               <div>
@@ -107,13 +107,13 @@
                               </div>
                               <div>
                                 <div class="text-start">
-                                  <h6 class="d-inline">Generate per kelas</h6>
+                                  <h6 class="d-inline">Generate per Mata Kuliah</h6>
                                 </div>
-                                <div id="progressKelas" class="d-none">
-                                  <span id="progressTextKelas"></span>
-                                  <i id="progressSelesaiKelas" class="material-icons d-none" class="d-none">check</i>
-                                  <div class="progress progress-siswa d-none" id="progressBarBgKelas">
-                                    <div id="progressBarKelas" class="progress-bar my-progress-bar bg-white"
+                                <div id="progressMatkul" class="d-none">
+                                  <span id="progressTextMatkul"></span>
+                                  <i id="progressSelesaiMatkul" class="material-icons d-none" class="d-none">check</i>
+                                  <div class="progress progress-siswa d-none" id="progressBarBgMatkul">
+                                    <div id="progressBarMatkul" class="progress-bar my-progress-bar bg-white"
                                       style="width: 0%;" role="progressbar" aria-valuenow="" aria-valuemin=""
                                       aria-valuemax=""></div>
                                   </div>
@@ -130,7 +130,7 @@
                               </div>
                               <div>
                                 <div class="text-start">
-                                  <h6 class="d-inline">Download Per Kelas</h6>
+                                  <h6 class="d-inline">Download Per Mata Kuliah</h6>
                                 </div>
                               </div>
                             </div>
@@ -140,8 +140,8 @@
                     </form>
                     <br>
                     <p>
-                      Untuk generate/download QR Code per masing-masing siswa kunjungi
-                      <a href="<?= base_url('admin/siswa'); ?>"><b>data siswa</b></a>
+                      Untuk generate/download QR Code per masing-masing mahasiswa kunjungi
+                      <a href="<?= base_url('admin/mahasiswa'); ?>"><b>data siswa</b></a>
                     </p>
                   </div>
                 </div>
@@ -149,10 +149,10 @@
               <div class="col-md-6">
                 <div class="card">
                   <div class="card-body">
-                    <h4 class="text-success"><b>Data Guru</b></h4>
-                    <p>Total jumlah guru : <b><?= count($guru); ?></b>
+                    <h4 class="text-success"><b>Data Dosen</b></h4>
+                    <p>Total jumlah dosen : <b><?= count($dosen); ?></b>
                       <br>
-                      <a href="<?= base_url('admin/guru'); ?>" class="text-success">Lihat data</a>
+                      <a href="<?= base_url('admin/dosen'); ?>" class="text-success">Lihat data</a>
                     </p>
                     <div class="row px-2">
                       <div class="col-12 col-xl-6 px-1">
@@ -164,11 +164,11 @@
                             <div>
                               <h4 class="d-inline font-weight-bold">Generate All</h4>
                               <div>
-                                <div id="progressGuru" class="d-none mt-2">
-                                  <span id="progressTextGuru"></span>
-                                  <i id="progressSelesaiGuru" class="material-icons d-none" class="d-none">check</i>
-                                  <div class="progress progress-guru">
-                                    <div id="progressBarGuru" class="progress-bar my-progress-bar bg-white"
+                                <div id="progressDosen" class="d-none mt-2">
+                                  <span id="progressTextDosen"></span>
+                                  <i id="progressSelesaiDosen" class="material-icons d-none" class="d-none">check</i>
+                                  <div class="progress progress-dosen">
+                                    <div id="progressBarDosen" class="progress-bar my-progress-bar bg-white"
                                       style="width: 0%;" role="progressbar" aria-valuenow="" aria-valuemin=""
                                       aria-valuemax=""></div>
                                   </div>
@@ -179,7 +179,7 @@
                         </button>
                       </div>
                       <div class="col-12 col-xl-6 px-1">
-                        <a href="<?= base_url('admin/qr/guru/download'); ?>" class="btn btn-success p-2 px-md-4 w-100">
+                        <a href="<?= base_url('admin/qr/dosen/download'); ?>" class="btn btn-success p-2 px-md-4 w-100">
                           <div class="d-flex align-items-center justify-content-center" style="gap: 12px;">
                             <div>
                               <i class="material-icons" style="font-size: 24px;">cloud_download</i>
@@ -196,8 +196,8 @@
                     <br>
                     <br>
                     <p>
-                      Untuk generate/download QR Code per masing-masing guru kunjungi
-                      <a href="<?= base_url('admin/guru'); ?>" class="text-success"><b>data guru</b></a>
+                      Untuk generate/download QR Code per masing-masing dosen kunjungi
+                      <a href="<?= base_url('admin/dosen'); ?>" class="text-success"><b>data dosen</b></a>
                     </p>
                   </div>
                 </div>
@@ -214,24 +214,24 @@
   </div>
 </div>
 <script>
-  const dataGuru = [
-    <?php foreach ($guru as $value) {
+  const dataDosen = [
+    <?php foreach ($dosen as $value) {
       echo "{
-              'nama' : `$value[nama_guru]`,
+              'nama' : `$value[nama_dosen]`,
               'unique_code' : `$value[unique_code]`,
-              'nomor' : `$value[nuptk]`
+              'nomor' : `$value[nip]`
             },";
     }
     ; ?>
   ];
 
   const dataSiswa = [
-    <?php foreach ($siswa as $value) {
+    <?php foreach ($mahasiswa as $value) {
       echo "{
-              'nama' : `$value[nama_siswa]`,
+              'nama' : `$value[nama_mahasiswa]`,
               'unique_code' : `$value[unique_code]`,
-              'id_kelas' : `$value[id_kelas]`,
-              'nomor' : `$value[nis]`
+              'id_matkul' : `$value[id_matkul]`,
+              'nomor' : `$value[nim]`
             },";
     }
     ; ?>
@@ -241,75 +241,75 @@
 
   function generateAllQrSiswa() {
     var i = 1;
-    $('#progressSiswa').removeClass('d-none');
-    $('#progressBarSiswa')
+    $('#progressMahasiswa').removeClass('d-none');
+    $('#progressBarMahasiswa')
       .attr('aria-valuenow', '0')
       .attr('aria-valuemin', '0')
-      .attr('aria-valuemax', dataSiswa.length)
+      .attr('aria-valuemax', dataMahasiswa.length)
       .attr('style', 'width: 0%;');
 
     dataSiswa.forEach(element => {
       jQuery.ajax({
-        url: "<?= base_url('admin/generate/siswa'); ?>",
+        url: "<?= base_url('admin/generate/mahasiswa'); ?>",
         type: 'post',
         data: {
           nama: element['nama'],
           unique_code: element['unique_code'],
-          id_kelas: element['id_kelas'],
+          id_matkul: element['id_matkul'],
           nomor: element['nomor']
         },
         success: function (response) {
           if (!response) return;
           if (i != dataSiswa.length) {
-            $('#progressTextSiswa').html('Progres: ' + i + '/' + dataSiswa.length);
+            $('#progressTextMahasiswa').html('Progres: ' + i + '/' + dataMahasiswa.length);
           } else {
-            $('#progressTextSiswa').html('Progres: ' + i + '/' + dataSiswa.length + ' selesai');
-            $('#progressSelesaiSiswa').removeClass('d-none');
+            $('#progressTextMahasiswa').html('Progres: ' + i + '/' + dataMahasiswa.length + ' selesai');
+            $('#progressSelesaiMahasiswa').removeClass('d-none');
           }
 
-          $('#progressBarSiswa')
+          $('#progressBarMahasiswa')
             .attr('aria-valuenow', i)
-            .attr('style', 'width: ' + (i / dataSiswa.length) * 100 + '%;');
+            .attr('style', 'width: ' + (i / dataMahasiswa.length) * 100 + '%;');
           i++;
         }
       });
     });
   }
 
-  function generateQrSiswaByKelas() {
+  function generateQrMahasiswaByMatkul() {
     var i = 1;
 
-    idKelas = $('#kelasSelect').val();
+    idMatkul = $('#matkulSelect').val();
 
-    if (idKelas == '') {
-      $('#progressKelas').addClass('d-none');
-      $('#textErrorKelas').html('Pilih kelas terlebih dahulu');
+    if (idMatkul == '') {
+      $('#progressMatkul').addClass('d-none');
+      $('#textErrorMatkul').html('Pilih mata kuliah terlebih dahulu');
       return;
     }
 
-    kelas = $('#idKelas' + idKelas).html();
+    matkul = $('#idMatkul' + idMatkul).html();
 
     jQuery.ajax({
-      url: "<?= base_url('admin/generate/siswa-by-kelas'); ?>",
+      url: "<?= base_url('admin/generate/mahasiswa-by-matkul'); ?>",
       type: 'post',
       data: {
-        idKelas: idKelas
+        idMatkul: idMatkul
       },
       success: function (response) {
         dataSiswaPerKelas = response;
 
         if (dataSiswaPerKelas.length < 1) {
-          $('#progressKelas').addClass('d-none');
-          $('#textErrorKelas').html('Data siswa kelas ' + kelas + ' tidak ditemukan');
+          $('#progressMatkul').addClass('d-none');
+          $('#textErrorMatkul').html('Data mahasiswa mata kuliah ' + matkul + ' tidak ditemukan');
           return;
         }
 
-        $('#textErrorKelas').html('')
+        $('#textErrorMatkul').html('')
 
-        $('#progressKelas').removeClass('d-none');
-        $('#progressBarBgKelas')
+        $('#progressMatkul').removeClass('d-none');
+        $('#progressBarBgMatkul')
           .removeClass('d-none');
-        $('#progressBarKelas')
+        $('#progressBarMatkul')
           .removeClass('d-none')
           .attr('aria-valuenow', '0')
           .attr('aria-valuemin', '0')
@@ -318,26 +318,26 @@
 
         dataSiswaPerKelas.forEach(element => {
           jQuery.ajax({
-            url: "<?= base_url('admin/generate/siswa'); ?>",
+            url: "<?= base_url('admin/generate/mahasiswa'); ?>",
             type: 'post',
             data: {
-              nama: element['nama_siswa'],
+              nama: element['nama_mahasiswa'],
               unique_code: element['unique_code'],
-              id_kelas: element['id_kelas'],
+              id_kelas: element['id_matkul'],
               nomor: element['nis']
             },
             success: function (response) {
               if (!response) return;
-              if (i != dataSiswaPerKelas.length) {
-                $('#progressTextKelas').html('Progres: ' + i + '/' + dataSiswaPerKelas.length);
+              if (i != dataMahasiswaperMatkul.length) {
+                $('#progressTextMatkul').html('Progres: ' + i + '/' + dataMahasiswaPerMatkul.length);
               } else {
-                $('#progressTextKelas').html('Progres: ' + i + '/' + dataSiswaPerKelas.length + ' selesai');
-                $('#progressSelesaiKelas').removeClass('d-none');
+                $('#progressTextMatkul').html('Progres: ' + i + '/' + dataMahasiswaPerMatkul.length + ' selesai');
+                $('#progressSelesaiMatkul').removeClass('d-none');
               }
 
-              $('#progressBarKelas')
+              $('#progressBarMatkul')
                 .attr('aria-valuenow', i)
-                .attr('style', 'width: ' + (i / dataSiswaPerKelas.length) * 100 + '%;');
+                .attr('style', 'width: ' + (i / dataSiswaPerMatkul.length) * 100 + '%;');
               i++;
             },
             error: function (xhr, status, thrown) {
@@ -349,18 +349,18 @@
     });
   }
 
-  function generateAllQrGuru() {
+  function generateAllQrDosen() {
     var i = 1;
-    $('#progressGuru').removeClass('d-none');
-    $('#progressBarGuru')
+    $('#progressDosen').removeClass('d-none');
+    $('#progressBarDosen')
       .attr('aria-valuenow', '0')
       .attr('aria-valuemin', '0')
-      .attr('aria-valuemax', dataGuru.length)
+      .attr('aria-valuemax', dataDosen.length)
       .attr('style', 'width: 0%;');
 
-    dataGuru.forEach(element => {
+    dataDosen.forEach(element => {
       jQuery.ajax({
-        url: "<?= base_url('admin/generate/guru'); ?>",
+        url: "<?= base_url('admin/generate/dosen'); ?>",
         type: 'post',
         data: {
           nama: element['nama'],
@@ -370,13 +370,13 @@
         success: function (response) {
           if (!response) return;
           if (i != dataGuru.length) {
-            $('#progressTextGuru').html('Progres: ' + i + '/' + dataGuru.length);
+            $('#progressTextGuru').html('Progres: ' + i + '/' + dataDosen.length);
           } else {
-            $('#progressTextGuru').html('Progres: ' + i + '/' + dataGuru.length + ' selesai');
-            $('#progressSelesaiGuru').removeClass('d-none');
+            $('#progressTextDosen').html('Progres: ' + i + '/' + dataDosen.length + ' selesai');
+            $('#progressSelesaiDosen').removeClass('d-none');
           }
 
-          $('#progressBarGuru')
+          $('#progressBarDosen')
             .attr('aria-valuenow', i)
             .attr('style', 'width: ' + (i / dataGuru.length) * 100 + '%;');
           i++;
