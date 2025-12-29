@@ -3,244 +3,184 @@
 namespace App\Controllers;
 
 use CodeIgniter\I18n\Time;
-use App\Models\GuruModel;
-use App\Models\SiswaModel;
-use App\Models\PresensiGuruModel;
-use App\Models\PresensiSiswaModel;
+use App\Models\DosenModel;
+use App\Models\MahasiswaModel;
+use App\Models\PresensiDosenModel;
+use App\Models\PresensiMahasiswaModel;
 use App\Libraries\enums\TipeUser;
 
 class Scan extends BaseController
 {
-   private bool $WANotificationEnabled;
+    private bool $WANotificationEnabled;
 
-   protected SiswaModel $siswaModel;
-   protected GuruModel $guruModel;
+    protected MahasiswaModel $mahasiswaModel;
+    protected DosenModel $dosenModel;
+    protected PresensiMahasiswaModel $presensiMahasiswaModel;
+    protected PresensiDosenModel $presensiDosenModel;
 
-   protected PresensiSiswaModel $presensiSiswaModel;
-   protected PresensiGuruModel $presensiGuruModel;
+    public function __construct()
+    {
+        $this->WANotificationEnabled = getenv('WA_NOTIFICATION') === 'true';
 
-   public function __construct()
-   {
-      $this->WANotificationEnabled = getenv('WA_NOTIFICATION') === 'true' ? true : false;
+        $this->mahasiswaModel = new MahasiswaModel();
+        $this->dosenModel = new DosenModel();
+        $this->presensiMahasiswaModel = new PresensiMahasiswaModel();
+        $this->presensiDosenModel = new PresensiDosenModel();
+    }
 
-      $this->siswaModel = new SiswaModel();
-      $this->guruModel = new GuruModel();
-      $this->presensiSiswaModel = new PresensiSiswaModel();
-      $this->presensiGuruModel = new PresensiGuruModel();
-   }
+    public function index($t = 'Masuk')
+    {
+        return view('scan/scan', [
+            'waktu' => $t,
+            'title' => 'Absensi Siswa dan Guru Berbasis QR Code'
+        ]);
+    }
 
-   public function index($t = 'Masuk')
-   {
-      $data = ['waktu' => $t, 'title' => 'Absensi Siswa dan Guru Berbasis QR Code'];
-      return view('scan/scan', $data);
-   }
+    public function cekKode()
+    {
+        $uniqueCode = $this->request->getVar('unique_code');
+        $waktuAbsen = strtolower($this->request->getVar('waktu'));
 
-   public function cekKode()
-   {
-      // ambil variabel POST
-      $uniqueCode = $this->request->getVar('unique_code');
-      $waktuAbsen = $this->request->getVar('waktu');
+        // default mahasiswa
+        $type = TipeUser::Mahasiswa;
+        $result = $this->mahasiswaModel->cekMahasiswa($uniqueCode);
 
-      $status = false;
-      $type = TipeUser::Siswa;
+        // jika bukan mahasiswa → cek dosen
+        if (empty($result)) {
+            $result = $this->dosenModel->cekDosen($uniqueCode);
 
-      // cek data siswa di database
-      $result = $this->siswaModel->cekSiswa($uniqueCode);
-
-      if (empty($result)) {
-         // jika cek siswa gagal, cek data guru
-         $result = $this->guruModel->cekGuru($uniqueCode);
-
-         if (!empty($result)) {
-            $status = true;
-
-            $type = TipeUser::Guru;
-         } else {
-            $status = false;
-
-            $result = NULL;
-         }
-      } else {
-         $status = true;
-      }
-
-      if (!$status) { // data tidak ditemukan
-         return $this->showErrorView('Data tidak ditemukan');
-      }
-
-      // jika data ditemukan
-      switch ($waktuAbsen) {
-         case 'masuk':
-            return $this->absenMasuk($type, $result);
-            break;
-
-         case 'pulang':
-            return $this->absenPulang($type, $result);
-            break;
-
-         default:
-            return $this->showErrorView('Data tidak valid');
-            break;
-      }
-   }
-
-   public function absenMasuk($type, $result)
-   {
-      // data ditemukan
-      $data['data'] = $result;
-      $data['waktu'] = 'masuk';
-
-      $date = Time::today()->toDateString();
-      $time = Time::now()->toTimeString();
-      $messageString = " sudah absen masuk pada tanggal $date jam $time";
-      // absen masuk
-      switch ($type) {
-         case TipeUser::Guru:
-            $idGuru =  $result['id_guru'];
-            $data['type'] = TipeUser::Guru;
-
-            $sudahAbsen = $this->presensiGuruModel->cekAbsen($idGuru, $date);
-
-            if ($sudahAbsen) {
-               $data['presensi'] = $this->presensiGuruModel->getPresensiById($sudahAbsen);
-               return $this->showErrorView('Anda sudah absen hari ini', $data);
+            if (!empty($result)) {
+                $type = TipeUser::Dosen;
+            } else {
+                return $this->showErrorView('Data tidak ditemukan');
             }
+        }
 
-            $this->presensiGuruModel->absenMasuk($idGuru, $date, $time);
-            $messageString = $result['nama_guru'] . ' dengan NIP ' . $result['nuptk'] . $messageString;
-            $data['presensi'] = $this->presensiGuruModel->getPresensiByIdGuruTanggal($idGuru, $date);
+        return match ($waktuAbsen) {
+            'masuk'  => $this->absenMasuk($type, $result),
+            'pulang' => $this->absenPulang($type, $result),
+            default  => $this->showErrorView('Waktu absen tidak valid')
+        };
+    }
 
-            break;
+    public function absenMasuk($type, $result)
+    {
+        $date = Time::today()->toDateString();
+        $time = Time::now()->toTimeString();
 
-         case TipeUser::Siswa:
-            $idSiswa =  $result['id_siswa'];
-            $idKelas =  $result['id_kelas'];
-            $data['type'] = TipeUser::Siswa;
+        $data = [
+            'data'  => $result,
+            'waktu' => 'masuk',
+            'type'  => $type
+        ];
 
-            $sudahAbsen = $this->presensiSiswaModel->cekAbsen($idSiswa, Time::today()->toDateString());
+        $message = " sudah absen masuk pada tanggal $date jam $time";
 
-            if ($sudahAbsen) {
-               $data['presensi'] = $this->presensiSiswaModel->getPresensiById($sudahAbsen);
-               return $this->showErrorView('Anda sudah absen hari ini', $data);
-            }
+        switch ($type) {
+            case TipeUser::Dosen:
+                $id = $result['id_dosen'];
 
-            $this->presensiSiswaModel->absenMasuk($idSiswa, $date, $time, $idKelas);
-            $messageString = 'Siswa ' . $result['nama_siswa'] . ' dengan NIS ' . $result['nis'] . $messageString;
-            $data['presensi'] = $this->presensiSiswaModel->getPresensiByIdSiswaTanggal($idSiswa, $date);
+                if ($this->presensiDosenModel->cekAbsen($id, $date)) {
+                    return $this->showErrorView('Anda sudah absen hari ini', $data);
+                }
 
-            break;
+                $this->presensiDosenModel->absenMasuk($id, $date, $time);
+                $data['presensi'] = $this->presensiDosenModel
+                    ->getPresensiByIdDosenTanggal($id, $date);
 
-         default:
-            return $this->showErrorView('Tipe tidak valid');
-      }
+                $message = $result['nama_dosen'] . ' (NIP ' . $result['nip'] . ')' . $message;
+                break;
 
-      // kirim notifikasi ke whatsapp
-      if ($this->WANotificationEnabled && !empty($result['no_hp'])) {
-         $message = [
-            'destination' => $result['no_hp'],
-            'message' => $messageString,
-            'delay' => 0
-         ];
-         try {
-            $this->sendNotification($message);
-         } catch (\Exception $e) {
-            log_message('error', 'Error sending notification: ' . $e->getMessage());
-         }
-      }
-      return view('scan/scan-result', $data);
-   }
+            case TipeUser::Mahasiswa:
+                $id = $result['id_mahasiswa'];
 
-   public function absenPulang($type, $result)
-   {
-      // data ditemukan
-      $data['data'] = $result;
-      $data['waktu'] = 'pulang';
+                if ($this->presensiMahasiswaModel->cekAbsen($id, $date)) {
+                    return $this->showErrorView('Anda sudah absen hari ini', $data);
+                }
 
-      $date = Time::today()->toDateString();
-      $time = Time::now()->toTimeString();
-      $messageString = " sudah absen pulang pada tanggal $date jam $time";
+                $this->presensiMahasiswaModel
+                    ->absenMasuk($id, $date, $time, $result['id_matkul']);
 
-      // absen pulang
-      switch ($type) {
-         case TipeUser::Guru:
-            $idGuru =  $result['id_guru'];
-            $data['type'] = TipeUser::Guru;
+                $data['presensi'] = $this->presensiMahasiswaModel
+                    ->getPresensiByIdMahasiswaTanggal($id, $date);
 
-            $sudahAbsen = $this->presensiGuruModel->cekAbsen($idGuru, $date);
+                $message = 'Mahasiswa ' . $result['nama_mahasiswa'] .
+                    ' (NIM ' . $result['nim'] . ')' . $message;
+                break;
+        }
 
-            if (!$sudahAbsen) {
-               return $this->showErrorView('Anda belum absen hari ini', $data);
-            }
+        $this->sendWA($result, $message);
 
-            $this->presensiGuruModel->absenKeluar($sudahAbsen, $time);
-            $messageString = $result['nama_guru'] . ' dengan NIP ' . $result['nuptk'] . $messageString;
-            $data['presensi'] = $this->presensiGuruModel->getPresensiById($sudahAbsen);
+        return view('scan/scan-result', $data);
+    }
 
-            break;
+    public function absenPulang($type, $result)
+    {
+        $date = Time::today()->toDateString();
+        $time = Time::now()->toTimeString();
 
-         case TipeUser::Siswa:
-            $idSiswa =  $result['id_siswa'];
-            $data['type'] = TipeUser::Siswa;
+        $data = [
+            'data'  => $result,
+            'waktu' => 'pulang',
+            'type'  => $type
+        ];
 
-            $sudahAbsen = $this->presensiSiswaModel->cekAbsen($idSiswa, $date);
+        $message = " sudah absen pulang pada tanggal $date jam $time";
 
-            if (!$sudahAbsen) {
-               return $this->showErrorView('Anda belum absen hari ini', $data);
-            }
+        switch ($type) {
+            case TipeUser::Dosen:
+                $id = $result['id_dosen'];
+                $presensiId = $this->presensiDosenModel->cekAbsen($id, $date);
 
-            $this->presensiSiswaModel->absenKeluar($sudahAbsen, $time);
-            $messageString = 'Siswa ' . $result['nama_siswa'] . ' dengan NIS ' . $result['nis'] . $messageString;
-            $data['presensi'] = $this->presensiSiswaModel->getPresensiById($sudahAbsen);
+                if (!$presensiId) {
+                    return $this->showErrorView('Anda belum absen hari ini', $data);
+                }
 
-            break;
-         default:
-            return $this->showErrorView('Tipe tidak valid');
-      }
+                $this->presensiDosenModel->absenKeluar($presensiId, $time);
+                $data['presensi'] = $this->presensiDosenModel->getPresensiById($presensiId);
+                $message = $result['nama_dosen'] . ' (NIP ' . $result['nip'] . ')' . $message;
+                break;
 
-      // kirim notifikasi ke whatsapp
-      if ($this->WANotificationEnabled && !empty($result['no_hp'])) {
-         $message = [
-            'destination' => $result['no_hp'],
-            'message' => $messageString,
-            'delay' => 0
-         ];
-         try {
-            $this->sendNotification($message);
-         } catch (\Exception $e) {
-            log_message('error', 'Error sending notification: ' . $e->getMessage());
-         }
-      }
+            case TipeUser::Mahasiswa:
+                $id = $result['id_mahasiswa'];
+                $presensiId = $this->presensiMahasiswaModel->cekAbsen($id, $date);
 
-      return view('scan/scan-result', $data);
-   }
+                if (!$presensiId) {
+                    return $this->showErrorView('Anda belum absen hari ini', $data);
+                }
 
-   public function showErrorView(string $msg = 'no error message', $data = NULL)
-   {
-      $errdata = $data ?? [];
-      $errdata['msg'] = $msg;
+                $this->presensiMahasiswaModel->absenKeluar($presensiId, $time);
+                $data['presensi'] = $this->presensiMahasiswaModel->getPresensiById($presensiId);
+                $message = 'Mahasiswa ' . $result['nama_mahasiswa'] .
+                    ' (NIM ' . $result['nim'] . ')' . $message;
+                break;
+        }
 
-      return view('scan/error-scan-result', $errdata);
-   }
+        $this->sendWA($result, $message);
 
-   protected function sendNotification($message)
-   {
-      $token = getenv('WHATSAPP_TOKEN');
-      $provider = getenv('WHATSAPP_PROVIDER');
+        return view('scan/scan-result', $data);
+    }
 
-      if (empty($provider)) {
-         return;
-      }
-      if (empty($token)) {
-         return;
-      }
-
-      switch ($provider) {
-         case 'Fonnte':
-            $whatsapp = new \App\Libraries\Whatsapp\Fonnte\Fonnte($token);
-            break;
-         default:
+    private function sendWA($result, string $message)
+    {
+        if (!$this->WANotificationEnabled || empty($result['no_hp'])) {
             return;
-      }
-      $whatsapp->sendMessage($message);
-   }
+        }
+
+        try {
+            $this->sendNotification([
+                'destination' => $result['no_hp'],
+                'message'     => $message,
+                'delay'       => 0
+            ]);
+        } catch (\Throwable $e) {
+            log_message('error', $e->getMessage());
+        }
+    }
+
+    public function showErrorView(string $msg, array $data = [])
+    {
+        $data['msg'] = $msg;
+        return view('scan/error-scan-result', $data);
+    }
 }

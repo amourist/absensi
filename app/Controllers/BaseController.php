@@ -14,55 +14,74 @@ use Psr\Log\LoggerInterface;
  *
  * BaseController provides a convenient place for loading components
  * and performing functions that are needed by all your controllers.
- * Extend this class in any new controllers:
- *     class Home extends BaseController
- *
- * For security be sure to declare any new methods as protected or private.
  */
 abstract class BaseController extends Controller
 {
-   /**
-    * Instance of the main Request object.
-    *
-    * @var CLIRequest|IncomingRequest
-    */
-   protected $request;
+    /**
+     * Instance of the main Request object.
+     *
+     * @var CLIRequest|IncomingRequest
+     */
+    protected $request;
 
-   /**
-    * An array of helpers to be loaded automatically upon
-    * class instantiation. These helpers will be available
-    * to all other controllers that extend BaseController.
-    *
-    * @var array
-    */
-   protected $helpers = [];
+    /**
+     * Helpers that will be loaded automatically.
+     *
+     * @var array
+     */
+    protected $helpers = [];
 
-   /**
-    * Be sure to declare properties for any property fetch you initialized.
-    * The creation of dynamic property is deprecated in PHP 8.2.
-    */
+    /**
+     * Shared properties
+     */
+    protected $session;
+    protected $generalSettings;
 
-   protected $session;
+    /**
+     * Constructor
+     */
+    public function initController(
+        RequestInterface $request,
+        ResponseInterface $response,
+        LoggerInterface $logger
+    ) {
+        // Wajib
+        parent::initController($request, $response, $logger);
 
-   protected $generalSettings;
+        // Session
+        $this->session = \Config\Services::session();
 
-   /**
-    * Constructor.
-    */
-   public function initController(RequestInterface $request, ResponseInterface $response, LoggerInterface $logger)
-   {
-      // Do Not Edit This Line
-      parent::initController($request, $response, $logger);
+        // General settings
+        $schoolConfigurations  = new \Config\School();
+        $this->generalSettings = $schoolConfigurations::$generalSettings;
 
-      // Preload any models, libraries, etc, here.
+        // Global variable ke semua view
+        $view = \Config\Services::renderer();
+        $view->setData([
+            'generalSettings' => $this->generalSettings
+        ]);
+    }
 
-      $this->session = \Config\Services::session();
-      $schoolConfigurations  = new \Config\School();
-      $this->generalSettings = $schoolConfigurations::$generalSettings;
+    /**
+     * Kirim notifikasi WhatsApp (dipakai oleh Scan, dll)
+     */
+    protected function sendNotification(array $message)
+    {
+        $token    = getenv('WHATSAPP_TOKEN');
+        $provider = getenv('WHATSAPP_PROVIDER');
 
+        if (empty($provider) || empty($token)) {
+            return;
+        }
 
-      // Passing global variable to views
-      $view = \Config\Services::renderer();
-      $view->setData(['generalSettings' => $this->generalSettings]);
-   }
+        switch ($provider) {
+            case 'Fonnte':
+                $whatsapp = new \App\Libraries\Whatsapp\Fonnte\Fonnte($token);
+                break;
+            default:
+                return;
+        }
+
+        $whatsapp->sendMessage($message);
+    }
 }

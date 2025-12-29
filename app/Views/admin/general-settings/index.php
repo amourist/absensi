@@ -14,18 +14,18 @@
                         <form action="<?= base_url('admin/general-settings/update'); ?>" method="post" enctype="multipart/form-data">
                             <?= csrf_field() ?>
                             <div class="form-group mt-4">
-                                <label for="school_name">Nama Sekolah</label>
-                                <input type="text" id="school_name" class="form-control <?= invalidFeedback('school_name') ? 'is-invalid' : ''; ?>" name="school_name" placeholder="SMK 1 Indonesia" value="<?= $generalSettings->school_name; ?>" required>
+                                <label for="nama_prodi">Nama Prodi</label>
+                                <input type="text" id="nama_prodi" class="form-control <?= invalidFeedback('nama_prodi') ? 'is-invalid' : ''; ?>" name="nama_prodi" placeholder="Informatika Peradaban" value="<?= $generalSettings->nama_prodi; ?>" required>
                                 <div class="invalid-feedback">
                                     <?= invalidFeedback('school_name'); ?>
                                 </div>
                             </div>
 
                             <div class="form-group mt-4">
-                                <label for="school_year">Tahun Ajaran</label>
-                                <input type="text" id="school_year" class="form-control <?= invalidFeedback('school_year') ? 'is-invalid' : ''; ?>" name="school_year" placeholder="2024/2025" value="<?= $generalSettings->school_year; ?>" required>
+                                <label for="tahun_ajaran">Tahun Ajaran</label>
+                                <input type="text" id="tahun_ajaran" class="form-control <?= invalidFeedback('tahun_ajaran') ? 'is-invalid' : ''; ?>" name="tahun_ajaran" placeholder="2024/2025" value="<?= $generalSettings->school_year; ?>" required>
                                 <div class="invalid-feedback">
-                                    <?= invalidFeedback('school_year'); ?>
+                                    <?= invalidFeedback('tahun_ajaran'); ?>
                                 </div>
                             </div>
 

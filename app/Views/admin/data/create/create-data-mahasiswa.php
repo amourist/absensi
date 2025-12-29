@@ -6,12 +6,12 @@
          <div class="col-lg-12 col-md-12">
             <div class="card">
                <div class="card-header card-header-primary">
-                  <h4 class="card-title"><b>Form Edit mahasiswa</b></h4>
+                  <h4 class="card-title"><b>Form Tambah Mahasiswa</b></h4>
 
                </div>
                <div class="card-body mx-5 my-3">
 
-                  <form action="<?= base_url('admin/mahasiswa/edit'); ?>" method="post">
+                  <form action="<?= base_url('admin/mahasiswa/create'); ?>" method="post">
                      <?= csrf_field() ?>
                      <?php $validation = \Config\Services::validation(); ?>
 
@@ -27,13 +27,11 @@
                         </div>
                      <?php endif; ?>
 
-                     <input type="hidden" name="id" value="<?= $data['id_mahasiswa']; ?>">
-
                      <div class="form-group mt-4">
                         <label for="nim">NIM</label>
                         <input type="text" id="nim"
                            class="form-control <?= $validation->getError('nim') ? 'is-invalid' : ''; ?>" name="nim"
-                           placeholder="1234" value="<?= old('nim') ?? $oldInput['nim'] ?? $data['nim'] ?>">
+                           placeholder="1234" value="<?= old('nim') ?? $oldInput['nim'] ?? '' ?>">
                         <div class="invalid-feedback">
                            <?= $validation->getError('nim'); ?>
                         </div>
@@ -43,21 +41,20 @@
                         <label for="nama">Nama Lengkap</label>
                         <input type="text" id="nama"
                            class="form-control <?= $validation->getError('nama') ? 'is-invalid' : ''; ?>" name="nama"
-                           placeholder="Your Name"
-                           value="<?= old('nama') ?? $oldInput['nama'] ?? $data['nama_mahasiswa'] ?>">
+                           placeholder="Your Name" value="<?= old('nama') ?? $oldInput['nama'] ?? '' ?>" required>
                         <div class="invalid-feedback">
                            <?= $validation->getError('nama'); ?>
                         </div>
                      </div>
                      <div class="row">
                         <div class="col-md-6">
-                           <label for="kelas">Mata Kuliah</label>
+                           <label for="matkul">Matkul</label>
                            <select class="custom-select <?= $validation->getError('id_matkul') ? 'is-invalid' : ''; ?>"
-                              id="kelas" name="id_matkul">
-                              <option value="">--Pilih kelas--</option>
-                              <?php foreach ($kelas as $value): ?>
-                                 <option value="<?= $value['id_matkul']; ?>" <?= (old('id_matkul') == $value['id_matkul'] || (isset($oldInput) && is_array($oldInput) && isset($oldInput['id_matkul']) && $oldInput['id_matkul'] == $value['id_matkul']) || ($value['id_matkul'] == $data['id_matkul'])) ? 'selected' : ''; ?>>
-                                    <?= $value['kelas']; ?>
+                              id="matkul" name="id_matkul">
+                              <option value="">--Pilih Matkul--</option>
+                              <?php foreach ($matkul as $value): ?>
+                                 <option value="<?= $value['id_matkul']; ?>" <?= (old('id_matkul') == $value['id_matkul'] || (isset($oldInput) && is_array($oldInput) && isset($oldInput['id_matkul']) && $oldInput['id_matkul'] == $value['id_matkul'])) ? 'selected' : ''; ?>>
+                                    <?= $value['matkul']; ?>
                                  </option>
                               <?php endforeach; ?>
                            </select>
@@ -66,11 +63,12 @@
                            </div>
                         </div>
                         <div class="col-md-6">
-                           <label for="jk">Jenim Kelamin</label>
+                           <label for="jk">Jenis Kelamin</label>
                            <?php
-                           $jenimKelamin = (old('jk') ?? (isset($oldInput) && is_array($oldInput) ? ($oldInput['jk'] ?? null) : null) ?? $data['jenim_kelamin']);
-                           $l = $jenimKelamin == 'Laki-laki' || $jenimKelamin == '1' ? 'checked' : '';
-                           $p = $jenimKelamin == 'Perempuan' || $jenimKelamin == '2' ? 'checked' : '';
+                           if (old('jk')) {
+                              $l = (old('jk') ?? (isset($oldInput) && is_array($oldInput) ? ($oldInput['jk'] ?? '') : '')) == '1' ? 'checked' : '';
+                              $p = (old('jk') ?? (isset($oldInput) && is_array($oldInput) ? ($oldInput['jk'] ?? '') : '')) == '2' ? 'checked' : '';
+                           }
                            ?>
                            <div
                               class="form-check form-control pt-0 mb-1 <?= $validation->getError('jk') ? 'is-invalid' : ''; ?>"
@@ -79,7 +77,7 @@
                                  <div class="col-auto">
                                     <div class="row">
                                        <div class="col-auto pr-1">
-                                          <input class="form-check" type="radio" name="jk" id="laki" value="1" <?= $l; ?>>
+                                          <input class="form-check" type="radio" name="jk" id="laki" value="1" <?= $l ?? ''; ?>>
                                        </div>
                                        <div class="col">
                                           <label class="form-check-label pl-0 pt-1" for="laki">
@@ -92,7 +90,7 @@
                                     <div class="row">
                                        <div class="col-auto pr-1">
                                           <input class="form-check" type="radio" name="jk" id="perempuan" value="2"
-                                             <?= $p; ?>>
+                                             <?= $p ?? ''; ?>>
                                        </div>
                                        <div class="col">
                                           <label class="form-check-label pl-0 pt-1" for="perempuan">
@@ -113,7 +111,7 @@
                         <label for="hp">No HP</label>
                         <input type="number" id="hp" name="no_hp"
                            class="form-control <?= $validation->getError('no_hp') ? 'is-invalid' : ''; ?>"
-                           value="<?= old('no_hp') ?? $oldInput['no_hp'] ?? $data['no_hp'] ?>">
+                           value="<?= old('no_hp') ?? $oldInput['no_hp'] ?? '' ?>">
                         <div class="invalid-feedback">
                            <?= $validation->getError('no_hp'); ?>
                         </div>
@@ -123,8 +121,7 @@
                         <label for="rfid">RFID Code</label>
                         <input type="text" id="rfid" name="rfid"
                            class="form-control <?= $validation->getError('rfid') ? 'is-invalid' : ''; ?>"
-                           value="<?= old('rfid') ?? $oldInput['rfid'] ?? $data['rfid_code'] ?? '' ?>"
-                           placeholder="Tap RFID Card here">
+                           value="<?= old('rfid') ?? $oldInput['rfid'] ?? '' ?>" placeholder="Tap RFID Card here">
                         <div class="invalid-feedback">
                            <?= $validation->getError('rfid'); ?>
                         </div>

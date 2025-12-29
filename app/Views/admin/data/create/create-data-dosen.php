@@ -6,7 +6,7 @@
          <div class="col-lg-12 col-md-12">
             <div class="card">
                <div class="card-header card-header-success">
-                  <h4 class="card-title"><b>Form Edit Dosen</b></h4>
+                  <h4 class="card-title"><b>Form Tambah Dosen</b></h4>
 
                </div>
                <div class="card-body mx-5 my-3">
@@ -22,17 +22,15 @@
                      </div>
                   <?php endif; ?>
 
-                  <form action="<?= base_url('admin/dosen/edit'); ?>" method="post">
+                  <form action="<?= base_url('admin/guru/create'); ?>" method="post">
                      <?= csrf_field() ?>
                      <?php $validation = \Config\Services::validation(); ?>
-
-                     <input type="hidden" name="id" value="<?= $data['id_dosen'] ?>">
 
                      <div class="form-group mt-4">
                         <label for="nip">NIP</label>
                         <input type="text" id="nip"
                            class="form-control <?= $validation->getError('nip') ? 'is-invalid' : ''; ?>" name="nip"
-                           placeholder="1234" value="<?= old('nip') ?? $oldInput['nip'] ?? $data['nip'] ?>">
+                           placeholder="1234" value="<?= old('nip') ?? $oldInput['nip'] ?? '' ?>">
                         <div class="invalid-feedback">
                            <?= $validation->getError('nip'); ?>
                         </div>
@@ -42,8 +40,7 @@
                         <label for="nama">Nama Lengkap</label>
                         <input type="text" id="nama"
                            class="form-control <?= $validation->getError('nama') ? 'is-invalid' : ''; ?>" name="nama"
-                           placeholder="Your Name" value="<?= old('nama') ?? $oldInput['nama'] ?? $data['nama_dosen'] ?>"
-                           required>
+                           placeholder="Your Name" value="<?= old('nama') ?? $oldInput['nama'] ?? '' ?>" required>
                         <div class="invalid-feedback">
                            <?= $validation->getError('nama'); ?>
                         </div>
@@ -52,9 +49,10 @@
                      <div class="form-group mt-2">
                         <label for="jk">Jenis Kelamin</label>
                         <?php
-                        $jenisKelamin = (old('jk') ?? $oldInput['jk'] ?? $data['jenis_kelamin']);
-                        $l = $jenisKelamin == 'Laki-laki' || $jenisKelamin == '1' ? 'checked' : '';
-                        $p = $jenisKelamin == 'Perempuan' || $jenisKelamin == '2' ? 'checked' : '';
+                        if (old('jk')) {
+                           $l = (old('jk') ?? $oldInput['jk'] ?? '') == '1' ? 'checked' : '';
+                           $p = (old('jk') ?? $oldInput['jk'] ?? '') == '2' ? 'checked' : '';
+                        }
                         ?>
                         <div
                            class="form-check form-control pt-0 mb-1 <?= $validation->getError('jk') ? 'is-invalid' : ''; ?>">
@@ -62,7 +60,7 @@
                               <div class="col-auto">
                                  <div class="row">
                                     <div class="col-auto pr-1">
-                                       <input class="form-check" type="radio" name="jk" id="laki" value="1" <?= $l; ?>>
+                                       <input class="form-check" type="radio" name="jk" id="laki" value="1" <?= $l ?? ''; ?>>
                                     </div>
                                     <div class="col">
                                        <label class="form-check-label pl-0 pt-1" for="laki">
@@ -74,7 +72,7 @@
                               <div class="col">
                                  <div class="row">
                                     <div class="col-auto pr-1">
-                                       <input class="form-check" type="radio" name="jk" id="perempuan" value="2" <?= $p; ?>>
+                                       <input class="form-check" type="radio" name="jk" id="perempuan" value="2" <?= $p ?? ''; ?>>
                                     </div>
                                     <div class="col">
                                        <label class="form-check-label pl-0 pt-1" for="perempuan">
@@ -93,15 +91,14 @@
                      <div class="form-group mt-4">
                         <label for="alamat">Alamat</label>
                         <input type="text" id="alamat" name="alamat" class="form-control"
-                           value="<?= old('alamat') ?? $oldInput['alamat'] ?? $data['alamat'] ?>">
+                           value="<?= old('alamat') ?? $oldInput['alamat'] ?? '' ?>">
                      </div>
 
                      <div class="form-group mt-4">
                         <label for="hp">No HP</label>
                         <input type="number" id="hp" name="no_hp"
                            class="form-control <?= $validation->getError('no_hp') ? 'is-invalid' : ''; ?>"
-                           placeholder="08969xxx" value="<?= old('no_hp') ?? $oldInput['no_hp'] ?? $data['no_hp'] ?>"
-                           required>
+                           placeholder="08969xxx" value="<?= old('no_hp') ?? $oldInput['no_hp'] ?? '' ?>" required>
                         <div class="invalid-feedback">
                            <?= $validation->getError('no_hp'); ?>
                         </div>
@@ -111,8 +108,7 @@
                         <label for="rfid">RFID Code</label>
                         <input type="text" id="rfid" name="rfid"
                            class="form-control <?= $validation->getError('rfid') ? 'is-invalid' : ''; ?>"
-                           value="<?= old('rfid') ?? $oldInput['rfid'] ?? $data['rfid_code'] ?? '' ?>"
-                           placeholder="Tap RFID Card here">
+                           value="<?= old('rfid') ?? $oldInput['rfid'] ?? '' ?>" placeholder="Tap RFID Card here">
                         <div class="invalid-feedback">
                            <?= $validation->getError('rfid'); ?>
                         </div>
