@@ -19,7 +19,7 @@ class DataAbsenDosen extends BaseController
 
    public function __construct()
    {
-      $this->Model = new DosenModel();
+      $this->dosenModel = new DosenModel();
 
       $this->presensiDosen = new PresensiDosenModel();
 
