@@ -4,14 +4,14 @@ namespace App\Models;
 
 use CodeIgniter\Model;
 
-class SiswaModel extends Model
+class MahasiswaModel extends Model
 {
    protected function initialize()
    {
       $this->allowedFields = [
          'nim',
-         'nama_siswa',
-         'id_kelas',
+         'nama_mahasiswa',
+         'id_matkul',
          'jenis_kelamin',
          'no_hp',
          'unique_code',
@@ -19,20 +19,20 @@ class SiswaModel extends Model
       ];
    }
 
-   protected $table = 'tb_siswa';
+   protected $table = 'tb_mahasiswa';
 
-   protected $primaryKey = 'id_siswa';
+   protected $primaryKey = 'id_mahasiswa';
 
-   public function cekSiswa(string $unique_code)
+   public function cekMahasiswa(string $unique_code)
    {
-      $this->select('tb_siswa.*, tb_kelas.tingkat, tb_kelas.index_kelas, tb_jurusan.jurusan, CONCAT(tb_kelas.tingkat, " ", tb_jurusan.jurusan, " ", tb_kelas.index_kelas) as kelas')
+      $this->select('tb_mahasiswa.*, tb_matkul.tingkat, tb_matkul.index_matkul, tb_jurusan.jurusan, CONCAT(tb_matkul.tingkat, " ", tb_jurusan.jurusan, " ", tb_matkul.index_matkul) as matkul')
          ->join(
-            'tb_kelas',
-            'tb_kelas.id_kelas = tb_siswa.id_kelas',
+            'tb_matkul',
+            'tb_matkul.id_matkul = tb_mahasiswa.id_matkul',
             'LEFT'
          )->join(
             'tb_jurusan',
-            'tb_jurusan.id = tb_kelas.id_jurusan',
+            'tb_jurusan.id = tb_matkul.id_jurusan',
             'LEFT'
          );
       return $this->where(['unique_code' => $unique_code])
@@ -40,57 +40,57 @@ class SiswaModel extends Model
          ->first();
    }
 
-   public function getSiswaById($id)
+   public function getMahasiswaById($id)
    {
       return $this->where([$this->primaryKey => $id])->first();
    }
 
-   public function getAllSiswaWithKelas($kelas = null, $jurusan = null)
+   public function getAllMahasiswaWithmatkul($matkul = null, $jurusan = null)
    {
-      $query = $this->select('tb_siswa.*, tb_kelas.tingkat, tb_kelas.index_kelas, tb_jurusan.jurusan, CONCAT(tb_kelas.tingkat, " ", tb_jurusan.jurusan, " ", tb_kelas.index_kelas) as kelas')
+      $query = $this->select('tb_mahasiswa.*, tb_matkul.tingkat, tb_matkul.index_matkul, tb_jurusan.jurusan, CONCAT(tb_matkul.tingkat, " ", tb_jurusan.jurusan, " ", tb_matkul.index_matkul) as matkul')
          ->join(
-            'tb_kelas',
-            'tb_kelas.id_kelas = tb_siswa.id_kelas',
+            'tb_matkul',
+            'tb_matkul.id_matkul = tb_mahasiswa.id_matkul',
             'LEFT'
          )->join(
             'tb_jurusan',
-            'tb_kelas.id_jurusan = tb_jurusan.id',
+            'tb_matkul.id_jurusan = tb_jurusan.id',
             'LEFT'
          );
 
-      if (!empty($kelas) && !empty($jurusan)) {
-         $query = $this->where(['tb_jurusan.jurusan' => $jurusan, 'tb_kelas.tingkat' => $kelas]);
-      } else if (empty($kelas) && !empty($jurusan)) {
+      if (!empty($matkul) && !empty($jurusan)) {
+         $query = $this->where(['tb_jurusan.jurusan' => $jurusan, 'tb_matkul.tingkat' => $matkul]);
+      } else if (empty($matkul) && !empty($jurusan)) {
          $query = $this->where(['tb_jurusan.jurusan' => $jurusan]);
-      } else if (!empty($kelas) && empty($jurusan)) {
-         $query = $this->where(['tb_kelas.tingkat' => $kelas]);
+      } else if (!empty($matkul) && empty($jurusan)) {
+         $query = $this->where(['tb_matkul.tingkat' => $matkul]);
       } else {
          $query = $this;
       }
 
-      return $query->orderBy('nama_siswa')->findAll();
+      return $query->orderBy('nama_mahasiswa')->findAll();
    }
 
-   public function getSiswaByKelas($id_kelas)
+   public function getMahasiswaByMatkul($id_matkul)
    {
-      return $this->select('tb_siswa.*, tb_kelas.tingkat, tb_kelas.index_kelas, tb_jurusan.jurusan, CONCAT(tb_kelas.tingkat, " ", tb_jurusan.jurusan, " ", tb_kelas.index_kelas) as kelas')
+      return $this->select('tb_mahasiswa.*, tb_matkul.tingkat, tb_matkul.index_matkul, tb_jurusan.jurusan, CONCAT(tb_matkul.tingkat, " ", tb_jurusan.jurusan, " ", tb_matkul.index_matkul) as matkul')
          ->join(
-            'tb_kelas',
-            'tb_kelas.id_kelas = tb_siswa.id_kelas',
+            'tb_matkul',
+            'tb_matkul.id_matkul = tb_mahasiswa.id_matkul',
             'LEFT'
          )
-         ->join('tb_jurusan', 'tb_kelas.id_jurusan = tb_jurusan.id', 'left')
-         ->where(['tb_siswa.id_kelas' => $id_kelas])
-         ->orderBy('nama_siswa')
+         ->join('tb_jurusan', 'tb_matkul.id_jurusan = tb_jurusan.id', 'left')
+         ->where(['tb_mahasiswa.id_matkul' => $id_matkul])
+         ->orderBy('nama_mahasiswa')
          ->findAll();
    }
 
-   public function createSiswa($nis, $nama, $idKelas, $jenisKelamin, $noHp, $rfid = null)
+   public function createMahasiswa($nim, $nama, $idMatkul, $jenisKelamin, $noHp, $rfid = null)
    {
       return $this->save([
-         'nis' => $nis,
-         'nama_siswa' => $nama,
-         'id_kelas' => $idKelas,
+         'nim' => $nim,
+         'nama_mahasiswa' => $nama,
+         'id_matkul' => $idMatkul,
          'jenis_kelamin' => $jenisKelamin,
          'no_hp' => $noHp,
          'unique_code' => generateToken(),
@@ -98,33 +98,33 @@ class SiswaModel extends Model
       ]);
    }
 
-   public function updateSiswa($id, $nis, $nama, $idKelas, $jenisKelamin, $noHp, $rfid = null)
+   public function updateMahasiswa($id, $nim, $nama, $idMatkul, $jenisKelamin, $noHp, $rfid = null)
    {
       return $this->save([
          $this->primaryKey => $id,
-         'nis' => $nis,
-         'nama_siswa' => $nama,
-         'id_kelas' => $idKelas,
+         'nim' => $nim,
+         'nama_mahasiswa' => $nama,
+         'id_matkul' => $idMatkul,
          'jenis_kelamin' => $jenisKelamin,
          'no_hp' => $noHp,
          'rfid_code' => $rfid
       ]);
    }
 
-   public function getSiswaCountByKelas($kelasId)
+   public function getMahasiswaCountByMatkul($matkulId)
    {
       $tree = array();
-      $kelasId = cleanNumber($kelasId);
-      if (!empty($kelasId)) {
-         array_push($tree, $kelasId);
+      $matkulId = cleanNumber($matkulId);
+      if (!empty($matkulId)) {
+         array_push($tree, $matkulId);
       }
 
-      $kelasIds = $tree;
-      if (countItems($kelasIds) < 1) {
+      $matkulIds = $tree;
+      if (countItems($matkulIds) < 1) {
          return array();
       }
 
-      return $this->whereIn('tb_siswa.id_kelas', $kelasIds, false)->countAllResults();
+      return $this->whereIn('tb_mahasiswa.id_matkul', $matkulIds, false)->countAllResults();
    }
 
    //generate CSV object
@@ -176,9 +176,9 @@ class SiswaModel extends Model
          foreach ($array as $item) {
             if ($i == $index) {
                $data = array();
-               $data['nis'] = getCSVInputValue($item, 'nis', 'int');
-               $data['nama_siswa'] = getCSVInputValue($item, 'nama_siswa');
-               $data['id_kelas'] = getCSVInputValue($item, 'id_kelas', 'int');
+               $data['nim'] = getCSVInputValue($item, 'nim', 'int');
+               $data['nama_mahasiswa'] = getCSVInputValue($item, 'nama_mahasiswa');
+               $data['id_matkul'] = getCSVInputValue($item, 'id_matkul', 'int');
                $data['jenis_kelamin'] = getCSVInputValue($item, 'jenis_kelamin');
                $data['no_hp'] = getCSVInputValue($item, 'no_hp');
                $data['unique_code'] = generateToken();
@@ -191,28 +191,28 @@ class SiswaModel extends Model
       }
    }
 
-   public function getSiswa($id)
+   public function getMahasiswa($id)
    {
-      return $this->where('id_siswa', cleanNumber($id))->get()->getRow();
+      return $this->where('id_mahasiswa', cleanNumber($id))->get()->getRow();
    }
 
    //delete post
-   public function deleteSiswa($id)
+   public function deleteMahasiswa($id)
    {
-      $siswa = $this->getSiswa($id);
-      if (!empty($siswa)) {
-         //delete siswa
-         return $this->where('id_siswa', $siswa->id_siswa)->delete();
+      $mahasiswa = $this->getMahasiswa($id);
+      if (!empty($mahasiswa)) {
+         //delete mahasiswa
+         return $this->where('id_mahasiswa', $mahasiswa->id_mahasiswa)->delete();
       }
       return false;
    }
 
    //delete multi post
-   public function deleteMultiSelected($siswaIds)
+   public function deleteMultiSelected($mahasiswaIds)
    {
-      if (!empty($siswaIds)) {
-         foreach ($siswaIds as $id) {
-            $this->deleteSiswa($id);
+      if (!empty($mahasiswaIds)) {
+         foreach ($mahasiswaIds as $id) {
+            $this->deleteMahasiswa($id);
          }
       }
    }
