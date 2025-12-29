@@ -2,9 +2,9 @@
    <div class="container-fluid">
       <form id="formUbah">
 
-         <input type="hidden" name="id_siswa" value="<?= $data['id_siswa'] ?? ''; ?>">
-         <input type="hidden" name="id_guru" value="<?= $data['id_guru'] ?? ''; ?>">
-         <input type="hidden" name="id_kelas" value="<?= $data['id_kelas'] ?? ''; ?>">
+         <input type="hidden" name="id_mahasiswa" value="<?= $data['id_mahasiswa'] ?? ''; ?>">
+         <input type="hidden" name="id_dosen" value="<?= $data['id_dosen'] ?? ''; ?>">
+         <input type="hidden" name="id_matkul" value="<?= $data['id_matkul'] ?? ''; ?>">
 
          <label for="kehadiran">Kehadiran</label>
          <div class="form-check" id="kehadiran">
