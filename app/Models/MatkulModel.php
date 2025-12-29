@@ -43,28 +43,28 @@ class MatkulModel extends BaseModel
 
    public function getDataMatkul()
    {
-      return $this->builder->select('tb_matkul.*, tb_jurusan.jurusan, tb_guru.nama_guru as nama_dosen, CONCAT(tb_matkul.semester, " ", tb_jurusan.jurusan, " ", tb_matkul.index_matkul) as matkul')
+      return $this->builder->select('tb_matkul.*, tb_jurusan.jurusan, tb_dosen.nama_dosen as nama_dosen, CONCAT(tb_matkul.semester, " ", tb_jurusan.jurusan, " ", tb_matkul.index_matkul) as matkul')
          ->join('tb_jurusan', 'tb_matkul.id_jurusan = tb_jurusan.id')
-         ->join('tb_guru', 'tb_matkul.id_dosen = tb_guru.id_guru', 'left')
+         ->join('tb_dosen', 'tb_matkul.id_dosen = tb_dosen.id_dosen', 'left')
          ->orderBy('tb_matkul.id_matkul')
          ->get()->getResult('array');
    }
 
    public function getMatkul($id)
    {
-      return $this->builder->select('tb_matkul.*, tb_jurusan.jurusan, tb_guru.nama_guru as nama_dosen, CONCAT(tb_matkul.semester, " ", tb_jurusan.jurusan, " ", tb_matkul.index_matkul) as matkul')
+      return $this->builder->select('tb_matkul.*, tb_jurusan.jurusan, tb_dosen.nama_dosen as nama_dosen, CONCAT(tb_matkul.semester, " ", tb_jurusan.jurusan, " ", tb_matkul.index_matkul) as matkul')
          ->join('tb_jurusan', 'tb_matkul.id_jurusan = tb_jurusan.id')
-         ->join('tb_guru', 'tb_matkul.id_dosen = tb_guru.id_guru', 'left')
+         ->join('tb_dosen', 'tb_matkul.id_dosen = tb_dosen.id_dosen', 'left')
          ->where('id_matkul', cleanNumber($id))
          ->get()->getRow();
    }
 
-   public function getMatkulByWali($id_guru)
+   public function getMatkulByDosen($id_dosen)
    {
-      return $this->builder->select('tb_matkul.*, tb_jurusan.jurusan, tb_guru.nama_guru as nama_dosen, CONCAT(tb_matkul.semester, " ", tb_jurusan.jurusan, " ", tb_matkul.index_matkul) as matkul')
+      return $this->builder->select('tb_matkul.*, tb_jurusan.jurusan, tb_dosen.nama_dosen as nama_dosen, CONCAT(tb_matkul.semester, " ", tb_jurusan.jurusan, " ", tb_matkul.index_matkul) as matkul')
          ->join('tb_jurusan', 'tb_matkul.id_jurusan = tb_jurusan.id')
-         ->join('tb_guru', 'tb_matkul.id_dosen = tb_guru.id_guru', 'left')
-         ->where('id_dosen', cleanNumber($id_guru))
+         ->join('tb_dosen', 'tb_matkul.id_dosen = tb_dosen.id_dosen', 'left')
+         ->where('id_dosen', cleanNumber($id_dosen))
          ->get()->getRowArray();
    }
 
