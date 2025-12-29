@@ -37,25 +37,25 @@ class DosenModel extends Model
       return $this->where([$this->primaryKey => $id])->first();
    }
 
-   public function createDosen($nuptk, $nama, $jenisKelamin, $alamat, $noHp, $rfid = null)
+   public function createDosen($nip, $nama, $jenisKelamin, $alamat, $noHp, $rfid = null)
    {
       return $this->save([
-         'nuptk' => $nuptk,
+         'nip' => $nip,
          'nama_dosen' => $nama,
          'jenis_kelamin' => $jenisKelamin,
          'alamat' => $alamat,
          'no_hp' => $noHp,
          'no_hp' => $noHp,
-         'unique_code' => sha1($nama . md5($nuptk . $nama . $noHp)) . substr(sha1($nuptk . rand(0, 100)), 0, 24),
+         'unique_code' => sha1($nama . md5($nip . $nama . $noHp)) . substr(sha1($nip . rand(0, 100)), 0, 24),
          'rfid_code' => $rfid
       ]);
    }
 
-   public function updateDosen($id, $nuptk, $nama, $jenisKelamin, $alamat, $noHp, $rfid = null)
+   public function updateDosen($id, $nip, $nama, $jenisKelamin, $alamat, $noHp, $rfid = null)
    {
       return $this->save([
          $this->primaryKey => $id,
-         'nuptk' => $nuptk,
+         'nip' => $nip,
          'nama_dosen' => $nama,
          'jenis_kelamin' => $jenisKelamin,
          'alamat' => $alamat,
