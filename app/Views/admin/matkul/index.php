@@ -25,7 +25,7 @@
 
                       </div>
                       <div class="col-12 col-sm-auto nav nav-tabs">
-                        <a class="btn-custom-tools" id="refreshBtn" onclick="fetchKelasJurusanData('kelas', '#dataMatkul')" href="javascript:void(0)">
+                        <a class="btn-custom-tools" id="refreshBtn" onclick="fetchKelasJurusanData('matkul', '#dataMatkul')" href="javascript:void(0)">
                           <i class="material-icons">refresh</i> Refresh
 
                         </a>

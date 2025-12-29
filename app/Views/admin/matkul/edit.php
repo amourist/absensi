@@ -18,12 +18,12 @@
               <div class="row">
                 <div class="col-md-6">
                   <div class="form-group mt-4">
-                    <label for="tingkat">Tingkat</label>
-                    <input type="text" id="tingkat"
-                      class="form-control <?= invalidFeedback('tingkat') ? 'is-invalid' : ''; ?>" name="tingkat"
-                      placeholder="'X', 'XI', 'XII'" value="<?= old('tingkat') ?? $kelas->tingkat ?? '' ?>" required>
+                    <label for="semester">Semester</label>
+                    <input type="text" id="semester"
+                      class="form-control <?= invalidFeedback('semester') ? 'is-invalid' : ''; ?>" name="semester"
+                      placeholder="'X', 'XI', 'XII'" value="<?= old('semester') ?? $matkul->semester ?? '' ?>" required>
                     <div class="invalid-feedback">
-                      <?= invalidFeedback('tingkat'); ?>
+                      <?= invalidFeedback('semester'); ?>
                     </div>
                   </div>
                 </div>
@@ -31,11 +31,11 @@
                   <div class="form-group mt-4">
                     <label for="index_kelas">Index Mata Kuliah</label>
                     <input type="text" id="index_matkul"
-                      class="form-control <?= invalidFeedback('index_matkul') ? 'is-invalid' : ''; ?>" name="index_kelas"
+                      class="form-control <?= invalidFeedback('index_matkul') ? 'is-invalid' : ''; ?>" name="index_matkul"
                       placeholder="'1', '2', 'A'" value="<?= old('index_matkul') ?? $kelas->index_kelas ?? '' ?>"
                       required>
                     <div class="invalid-feedback">
-                      <?= invalidFeedback('index_kelas'); ?>
+                      <?= invalidFeedback('index_matkul'); ?>
                     </div>
                   </div>
                 </div>
@@ -56,18 +56,18 @@
                 </div>
               </div>
               <div class="col-md-6">
-                <label for="id_wali_kelas">Wali Kelas</label>
-                <select class="custom-select <?= invalidFeedback('id_wali_kelas') ? 'is-invalid' : ''; ?>"
-                  id="id_wali_kelas" name="id_wali_kelas">
-                  <option value="">--Pilih Wali Kelas--</option>
-                  <?php foreach ($guru as $value): ?>
-                    <option value="<?= $value['id_guru']; ?>" <?= $kelas->id_wali_kelas == $value['id_guru'] ? 'selected' : ''; ?>>
-                      <?= $value['nama_guru']; ?>
+                <label for="id_dosen">Dosen Pembimbing</label>
+                <select class="custom-select <?= invalidFeedback('id_dosbing') ? 'is-invalid' : ''; ?>"
+                  id="id_dosbing" name="id_dosbing">
+                  <option value="">--Pilih Dosen Pembimbing--</option>
+                  <?php foreach ($dosen as $value): ?>
+                    <option value="<?= $value['id_dosen']; ?>" <?= $kelas->id_dosbing == $value['id_dosen'] ? 'selected' : ''; ?>>
+                      <?= $value['nama_dosen']; ?>
                     </option>
                   <?php endforeach; ?>
                 </select>
                 <div class="invalid-feedback">
-                  <?= invalidFeedback('id_wali_kelas'); ?>
+                  <?= invalidFeedback('id_dosbing'); ?>
                 </div>
               </div>
           </div>
