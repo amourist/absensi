@@ -13,7 +13,7 @@ class PetugasModel extends Model
          'username',
          'password_hash',
          'is_superadmin',
-         'id_guru',
+         'id_dosen',
          'active'
       ];
    }
@@ -24,8 +24,8 @@ class PetugasModel extends Model
 
    public function getAllPetugas()
    {
-      return $this->select('users.*, tb_guru.nama_guru')
-         ->join('tb_guru', 'users.id_guru = tb_guru.id_guru', 'left')
+      return $this->select('users.*, tb_dosen.nama_dosen')
+         ->join('tb_dosen', 'users.id_dosen = tb_dosen.id_dosen', 'left')
          ->findAll();
    }
 
@@ -34,7 +34,7 @@ class PetugasModel extends Model
       return $this->where([$this->primaryKey => $id])->first();
    }
 
-   public function savePetugas($idPetugas, $email, $username, $passwordHash, $role, $id_guru = null, $active = 1)
+   public function savePetugas($idPetugas, $email, $username, $passwordHash, $role, $id_dosen = null, $active = 1)
    {
       return $this->save([
          $this->primaryKey => $idPetugas,
@@ -42,7 +42,7 @@ class PetugasModel extends Model
          'username' => $username,
          'password_hash' => $passwordHash,
          'is_superadmin' => $role ?? '0',
-         'id_guru' => $id_guru,
+         'id_guru' => $id_dosen,
          'active' => $active
       ]);
    }
