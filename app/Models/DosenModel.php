@@ -7,7 +7,7 @@ use CodeIgniter\Model;
 class DosenModel extends Model
 {
    protected $allowedFields = [
-      'nuptk',
+      'nip',
       'nama_dosen',
       'jenis_kelamin',
       'alamat',
