@@ -9,7 +9,7 @@ class SiswaModel extends Model
    protected function initialize()
    {
       $this->allowedFields = [
-         'nis',
+         'nim',
          'nama_siswa',
          'id_kelas',
          'jenis_kelamin',
