@@ -4,7 +4,7 @@ namespace App\Models;
 
 use CodeIgniter\Model;
 
-class SiswaModel extends Model
+class MahasiswaModel extends Model
 {
    protected function initialize()
    {
@@ -111,7 +111,7 @@ class SiswaModel extends Model
       ]);
    }
 
-   public function getSiswaCountByMatkul($matkulId)
+   public function getMahasiswaCountByMatkul($matkulId)
    {
       $tree = array();
       $matkulId = cleanNumber($matkulId);
@@ -191,15 +191,15 @@ class SiswaModel extends Model
       }
    }
 
-   public function getmahasiswa($id)
+   public function getMahasiswa($id)
    {
       return $this->where('id_mahasiswa', cleanNumber($id))->get()->getRow();
    }
 
    //delete post
-   public function deletemahasiswa($id)
+   public function deleteMahasiswa($id)
    {
-      $mahasiswa = $this->getmahasiswa($id);
+      $mahasiswa = $this->getMahasiswa($id);
       if (!empty($mahasiswa)) {
          //delete mahasiswa
          return $this->where('id_mahasiswa', $mahasiswa->id_mahasiswa)->delete();
