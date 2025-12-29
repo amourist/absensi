@@ -3,41 +3,41 @@
 namespace App\Controllers\Teacher;
 
 use App\Controllers\BaseController;
-use App\Models\KelasModel;
-use App\Models\SiswaModel;
+use App\Models\MatkulModel;
+use App\Models\MahasiswaModel;
 use App\Controllers\Admin\QRGenerator;
 
 class QRCode extends BaseController
 {
-    protected KelasModel $kelasModel;
-    protected SiswaModel $siswaModel;
+    protected MatkulModel $matkulModel;
+    protected MahasiswaModel $mahasiswaModel;
 
     public function __construct()
     {
-        $this->kelasModel = new KelasModel();
-        $this->siswaModel = new SiswaModel();
+        $this->matkulModel = new MatkulModel();
+        $this->mahasiswaModel = new MahasiswaModel();
     }
 
     public function index()
     {
         $user = user();
-        if (empty($user->id_guru)) {
-            return redirect()->to('admin')->with('error', 'Anda bukan Wali Kelas.');
+        if (empty($user->id_dosen)) {
+            return redirect()->to('admin')->with('error', 'Anda bukan Dosen Pengampu.');
         }
 
-        $kelas = $this->kelasModel->getKelasByWali($user->id_guru);
+        $matkul = $this->matkulModel->getMatkulByDosen($user->id_dosen);
 
-        if (empty($kelas)) {
-            return redirect()->to('teacher/dashboard')->with('error', 'Kelas belum ditugaskan.');
+        if (empty($matkul)) {
+            return redirect()->to('teacher/dashboard')->with('error', 'Mata Kuliah belum ditugaskan.');
         }
 
-        $siswa = $this->siswaModel->getSiswaByKelas($kelas['id_kelas']);
+        $mahasiswa = $this->mahasiswaModel->getSiswaByKelas($matkul['id_matkul']);
 
         $data = [
-            'title' => 'Download QR Code Siswa',
+            'title' => 'Download QR Code Mahasiswa',
             'ctx' => 'qr',
-            'kelas' => $kelas,
-            'siswa' => $siswa
+            'matkul' => $matkul,
+            'mahasiswa' => $mahasiswa
         ];
 
         return view('teacher/qr_code', $data);
@@ -46,13 +46,13 @@ class QRCode extends BaseController
     public function download()
     {
         $user = user();
-        if (empty($user->id_guru)) {
-            return redirect()->to('admin')->with('error', 'Anda bukan Wali Kelas.');
+        if (empty($user->id_dosen)) {
+            return redirect()->to('admin')->with('error', 'Anda bukan Dosen Pengampu.');
         }
 
-        $kelas = $this->kelasModel->getKelasByWali($user->id_guru);
+        $matkul = $this->matkulModel->getKelasByWali($user->id_dosen);
 
-        if (empty($kelas)) {
+        if (empty($matkul)) {
             return redirect()->back();
         }
 
@@ -60,7 +60,7 @@ class QRCode extends BaseController
         $qrGenerator = new QRGenerator();
         $qrGenerator->initController($this->request, $this->response, service('logger'));
 
-        $this->request->setGlobal('get', ['id_kelas' => $kelas['id_kelas']]);
+        $this->request->setGlobal('get', ['id_matkul' => $matkul['id_matkul']]);
 
         return $qrGenerator->downloadAllQrSiswa();
     }
