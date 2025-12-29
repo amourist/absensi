@@ -3,25 +3,25 @@
 namespace App\Controllers\Teacher;
 
 use App\Controllers\BaseController;
-use App\Models\KelasModel;
-use App\Models\SiswaModel;
-use App\Models\PresensiSiswaModel;
+use App\Models\MatkulModel;
+use App\Models\MahasiswaModel;
+use App\Models\PresensiMahasiswaModel;
 use CodeIgniter\I18n\Time;
 
 use App\Models\KehadiranModel;
 
 class Dashboard extends BaseController
 {
-    protected KelasModel $kelasModel;
-    protected SiswaModel $siswaModel;
-    protected PresensiSiswaModel $presensiSiswaModel;
+    protected MatkulModel $matkulModel;
+    protected MahasiswaModel $mahasiswaModel;
+    protected PresensiMahasiswaModel $presensiMahasiswaModel;
     protected KehadiranModel $kehadiranModel;
 
     public function __construct()
     {
-        $this->kelasModel = new KelasModel();
-        $this->siswaModel = new SiswaModel();
-        $this->presensiSiswaModel = new PresensiSiswaModel();
+        $this->matkulModel = new MatkulModel();
+        $this->mahasiswaModel = new MahasiswaModel();
+        $this->presensiMahasiswaModel = new PresensiMahasiswaModel();
         $this->kehadiranModel = new KehadiranModel();
     }
 
@@ -29,15 +29,15 @@ class Dashboard extends BaseController
     {
         $user = user();
         if (empty($user->id_guru)) {
-            return redirect()->to('admin')->with('error', 'Anda bukan Wali Kelas.');
+            return redirect()->to('admin')->with('error', 'Anda bukan Dosen Pengampu Mata Kulaih.');
         }
 
         // Get class where the teacher is Wali Kelas
-        $kelas = $this->kelasModel->getKelasByWali($user->id_guru);
+        $matkul = $this->matkulModel->getKelasByWali($user->id_dosen);
 
-        if (empty($kelas)) {
+        if (empty($matkul)) {
             $data = [
-                'title' => 'Dashboard Wali Kelas',
+                'title' => 'Dashboard Dosen',
                 'ctx' => 'dashboard',
                 'no_class' => true
             ];
@@ -49,15 +49,15 @@ class Dashboard extends BaseController
 
         // Basic stats
         $data = [
-            'title' => 'Dashboard Wali Kelas',
+            'title' => 'Dashboard Dosen',
             'ctx' => 'dashboard',
-            'kelas' => $kelas,
+            'matkul' => $matkul,
             'summary' => [
-                'total_siswa' => $this->siswaModel->where('id_kelas', $kelas['id_kelas'])->countAllResults(),
-                'hadir_hari_ini' => $this->presensiSiswaModel->where(['id_kelas' => $kelas['id_kelas'], 'tanggal' => $today, 'id_kehadiran' => '1'])->countAllResults(),
-                'sakit_hari_ini' => $this->presensiSiswaModel->where(['id_kelas' => $kelas['id_kelas'], 'tanggal' => $today, 'id_kehadiran' => '2'])->countAllResults(),
-                'izin_hari_ini' => $this->presensiSiswaModel->where(['id_kelas' => $kelas['id_kelas'], 'tanggal' => $today, 'id_kehadiran' => '3'])->countAllResults(),
-                'alfa_hari_ini' => $this->presensiSiswaModel->where(['id_kelas' => $kelas['id_kelas'], 'tanggal' => $today, 'id_kehadiran' => '4'])->countAllResults(),
+                'total_mahasiswa' => $this->mahasiswaModel->where('id_matkul', $matkul['id_matkul'])->countAllResults(),
+                'hadir_hari_ini' => $this->presensiMahasiswaModel->where(['id_matkul' => $matkul['id_matkul'], 'tanggal' => $today, 'id_kehadiran' => '1'])->countAllResults(),
+                'sakit_hari_ini' => $this->presensiMahasiswaModel->where(['id_matkul' => $matkul['id_matkul'], 'tanggal' => $today, 'id_kehadiran' => '2'])->countAllResults(),
+                'izin_hari_ini' => $this->presensiMahasiswaModel->where(['id_matkul' => $matkul['id_matkul'], 'tanggal' => $today, 'id_kehadiran' => '3'])->countAllResults(),
+                'alfa_hari_ini' => $this->presensiMahasiswaModel->where(['id_matkul' => $matkul['id_matkul'], 'tanggal' => $today, 'id_kehadiran' => '4'])->countAllResults(),
             ]
         ];
 
@@ -75,7 +75,7 @@ class Dashboard extends BaseController
             array_push($dateRange, $formattedDate);
             array_push(
                 $kehadiranArray,
-                $this->presensiSiswaModel->where(['id_kelas' => $kelas['id_kelas'], 'tanggal' => $date, 'id_kehadiran' => '1'])->countAllResults()
+                $this->presensiMahasiswaModel->where(['id_matkul' => $matkul['id_matkul'], 'tanggal' => $date, 'id_kehadiran' => '1'])->countAllResults()
             );
         }
 
@@ -90,19 +90,19 @@ class Dashboard extends BaseController
     public function attendance()
     {
         $user = user();
-        if (empty($user->id_guru)) {
-            return redirect()->to('teacher/dashboard')->with('error', 'Anda bukan Wali Kelas.');
+        if (empty($user->id_dosen)) {
+            return redirect()->to('teacher/dashboard')->with('error', 'Anda bukan Dosen Pengampu Mata Kuliah.');
         }
 
-        $kelas = $this->kelasModel->getKelasByWali($user->id_guru);
-        if (empty($kelas)) {
-            return redirect()->to('teacher/dashboard')->with('error', 'Anda belum ditugaskan sebagai Wali Kelas.');
+        $matkul = $this->matkulModel->getKelasByDosen($user->id_dosen);
+        if (empty($matkul)) {
+            return redirect()->to('teacher/dashboard')->with('error', 'Anda belum ditugaskan sebagai Dosen.');
         }
 
         $data = [
             'title' => 'Manajemen Kehadiran',
             'ctx' => 'attendance',
-            'kelas' => $kelas,
+            'matkul' => $matkul,
             'date' => Time::now()->toDateString()
         ];
 
@@ -111,31 +111,31 @@ class Dashboard extends BaseController
 
     public function getAttendanceList()
     {
-        $idKelas = $this->request->getVar('id_kelas');
-        $namaKelas = $this->request->getVar('kelas'); // Just passed back to view
+        $idmatkul = $this->request->getVar('id_matkul');
+        $namamatkul = $this->request->getVar('matkul'); // Just passed back to view
         $tanggal = $this->request->getVar('tanggal');
 
-        $result = $this->presensiSiswaModel->getPresensiByKelasTanggal($idKelas, $tanggal);
+        $result = $this->presensiMahasiswaModel->getPresensiByMatkulTanggal($idMatkul, $tanggal);
         $lewat = Time::parse($tanggal)->isAfter(Time::today());
 
         $data = [
             'data' => $result,
-            'kelas' => $namaKelas,
+            'matkul' => $namamatkul,
             'lewat' => $lewat
         ];
 
-        return view('teacher/absen/list_absen_siswa', $data);
+        return view('teacher/absen/list_absen_mahasiswa', $data);
     }
 
     public function getEditModal()
     {
         $idPresensi = $this->request->getVar('id_presensi');
-        $idSiswa = $this->request->getVar('id_siswa');
+        $idMahasiswa = $this->request->getVar('id_mahasiswa');
 
         $data = [
-            'presensi' => $this->presensiSiswaModel->getPresensiById($idPresensi),
+            'presensi' => $this->presensiMahasiswaModel->getPresensiById($idPresensi),
             'listKehadiran' => $this->kehadiranModel->getAllKehadiran(),
-            'data' => $this->siswaModel->getSiswaById($idSiswa)
+            'data' => $this->mahasiswaModel->getMahasiswaById($idMahasiswa)
         ];
 
         return view('teacher/absen/modal_ubah_kehadiran', $data);
@@ -144,15 +144,15 @@ class Dashboard extends BaseController
     public function updateSingleAttendance()
     {
         $idKehadiran = $this->request->getVar('id_kehadiran');
-        $idSiswa = $this->request->getVar('id_siswa');
-        $idKelas = $this->request->getVar('id_kelas');
+        $idMahasiswa = $this->request->getVar('id_mahasiswa');
+        $idMatkul = $this->request->getVar('id_matkul');
         $tanggal = $this->request->getVar('tanggal');
         $jamMasuk = $this->request->getVar('jam_masuk');
         $jamKeluar = $this->request->getVar('jam_keluar');
         $keterangan = $this->request->getVar('keterangan');
 
         // Check if attendance exists
-        $cek = $this->presensiSiswaModel->cekAbsen($idSiswa, $tanggal);
+        $cek = $this->presensiMahasiswaModel->cekAbsen($idMahasiswa, $tanggal);
 
         // Update or Insert (updatePresensi handles logic if first arg is ID or null/false)
         /* 
@@ -160,10 +160,10 @@ class Dashboard extends BaseController
            cekAbsen returns ID if exists, OR false.
            If false, we pass null to create new.
         */
-        $result = $this->presensiSiswaModel->updatePresensi(
+        $result = $this->presensiMahasiswaModel->updatePresensi(
             $cek == false ? null : $cek,
-            $idSiswa,
-            $idKelas,
+            $idMahasiswa,
+            $idMatkul,
             $tanggal,
             $idKehadiran,
             $jamMasuk ?: null,
@@ -171,7 +171,7 @@ class Dashboard extends BaseController
             $keterangan
         );
 
-        $response['nama_siswa'] = $this->siswaModel->getSiswaById($idSiswa)['nama_siswa'];
+        $response['nama_mahasiswa'] = $this->mahasiswaModel->getMahasiswaById($idMahasiswa)['nama_mahasiswa'];
         $response['status'] = $result ? true : false;
 
         return $this->response->setJSON($response);
