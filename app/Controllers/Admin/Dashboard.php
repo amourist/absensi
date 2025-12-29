@@ -4,34 +4,34 @@ namespace App\Controllers\Admin;
 
 use App\Controllers\BaseController;
 
-use App\Models\GuruModel;
-use App\Models\SiswaModel;
+use App\Models\DosenModel;
+use App\Models\MahasiswaModel;
 use App\Models\KelasModel;
 use App\Models\PetugasModel;
-use App\Models\PresensiGuruModel;
-use App\Models\PresensiSiswaModel;
+use App\Models\PresensiDosenModel;
+use App\Models\PresensiMahasiswaModel;
 use CodeIgniter\I18n\Time;
-use Config\AbsensiSekolah as ConfigAbsensiSekolah;
+use Config\AbsensiKampus as ConfigAbsensiKampus;
 
 class Dashboard extends BaseController
 {
-   protected SiswaModel $siswaModel;
-   protected GuruModel $guruModel;
+   protected MahasiswaModel $mahasiswaModel;
+   protected DosenModel $dosenModel;
 
    protected KelasModel $KelasModel;
 
-   protected PresensiSiswaModel $presensiSiswaModel;
-   protected PresensiGuruModel $presensiGuruModel;
+   protected PresensiMahasiswaModel $presensiMahasiswaModel;
+   protected PresensiDosenModel $presensiDosenModel;
 
    protected PetugasModel $petugasModel;
 
    public function __construct()
    {
-      $this->siswaModel = new SiswaModel();
-      $this->guruModel = new GuruModel();
+      $this->mahasiswaModel = new MahasiswaModel();
+      $this->dosenModel = new DosenModel();
       $this->KelasModel = new KelasModel();
-      $this->presensiSiswaModel = new PresensiSiswaModel();
-      $this->presensiGuruModel = new PresensiGuruModel();
+      $this->presensiMahasiswaModel = new PresensiMahasiswaModel();
+      $this->presensiDosenModel = new PresensiDosenModel();
       $this->petugasModel = new PetugasModel();
    }
 
@@ -43,8 +43,8 @@ class Dashboard extends BaseController
       $user = user();
       $userRole = (int) $user->is_superadmin;
 
-      if (!empty($user->id_guru)) {
-         return redirect()->to('teacher/dashboard');
+      if (!empty($user->id_dosen)) {
+         return redirect()->to('lecturer/dashboard');
       }
 
       if ($userRole < 1) {
@@ -56,8 +56,8 @@ class Dashboard extends BaseController
       $now = Time::now();
 
       $dateRange = [];
-      $siswaKehadiranArray = [];
-      $guruKehadiranArray = [];
+      $mahasiswaKehadiranArray = [];
+      $dosenKehadiranArray = [];
 
       for ($i = 6; $i >= 0; $i--) {
          $date = $now->subDays($i)->toDateString();
@@ -69,16 +69,16 @@ class Dashboard extends BaseController
          }
          array_push($dateRange, $formattedDate);
          array_push(
-            $siswaKehadiranArray,
-            count($this->presensiSiswaModel
-               ->join('tb_siswa', 'tb_presensi_siswa.id_siswa = tb_siswa.id_siswa', 'left')
-               ->where(['tb_presensi_siswa.tanggal' => "$date", 'tb_presensi_siswa.id_kehadiran' => '1'])->findAll())
+            $mahasiswaKehadiranArray,
+            count($this->presensiMahasiswaModel
+               ->join('tb_mahasiswa', 'tb_presensi_mahasiswa.id_mahasiswa = tb_mahasiswa.id_mahasiswa', 'left')
+               ->where(['tb_presensi_mahasiswa.tanggal' => "$date", 'tb_presensi_mahasiswa.id_kehadiran' => '1'])->findAll())
          );
          array_push(
-            $guruKehadiranArray,
-            count($this->presensiGuruModel
-               ->join('tb_guru', 'tb_presensi_guru.id_guru = tb_guru.id_guru', 'left')
-               ->where(['tb_presensi_guru.tanggal' => "$date", 'tb_presensi_guru.id_kehadiran' => '1'])->findAll())
+            $dosenKehadiranArray,
+            count($this->presensiDosenModel
+               ->join('tb_dosen', 'tb_presensi_dosen.id_dosen = tb_dosen.id_dosen', 'left')
+               ->where(['tb_presensi_dosen.tanggal' => "$date", 'tb_presensi_dosen.id_kehadiran' => '1'])->findAll())
          );
       }
 
@@ -88,29 +88,29 @@ class Dashboard extends BaseController
          'title' => 'Dashboard',
          'ctx' => 'dashboard',
 
-         'siswa' => $this->siswaModel->getAllSiswaWithKelas(),
-         'guru' => $this->guruModel->getAllGuru(),
+         'siswa' => $this->mahasiswaModel->getAllMahasiswaWithKelas(),
+         'guru' => $this->dosenModel->getAllDosen(),
 
          'kelas' => $this->KelasModel->getDataKelas(),
 
          'dateRange' => $dateRange,
          'dateNow' => $now->toLocalizedString('d MMMM Y'),
 
-         'grafikKehadiranSiswa' => $siswaKehadiranArray,
-         'grafikkKehadiranGuru' => $guruKehadiranArray,
+         'grafikKehadiranMahasiswa' => $mahasiswaKehadiranArray,
+         'grafikkKehadiranDosen' => $dosenKehadiranArray,
 
-         'jumlahKehadiranSiswa' => [
-            'hadir' => count($this->presensiSiswaModel->getPresensiByKehadiran('1', $today)),
-            'sakit' => count($this->presensiSiswaModel->getPresensiByKehadiran('2', $today)),
-            'izin' => count($this->presensiSiswaModel->getPresensiByKehadiran('3', $today)),
-            'alfa' => count($this->presensiSiswaModel->getPresensiByKehadiran('4', $today))
+         'jumlahKehadiranMahasiswa' => [
+            'hadir' => count($this->presensiMahasiswaModel->getPresensiByKehadiran('1', $today)),
+            'sakit' => count($this->presensiMahasiswaModel->getPresensiByKehadiran('2', $today)),
+            'izin' => count($this->presensiMahasiswaModel->getPresensiByKehadiran('3', $today)),
+            'alfa' => count($this->presensiMahasiswaModel->getPresensiByKehadiran('4', $today))
          ],
 
          'jumlahKehadiranGuru' => [
-            'hadir' => count($this->presensiGuruModel->getPresensiByKehadiran('1', $today)),
-            'sakit' => count($this->presensiGuruModel->getPresensiByKehadiran('2', $today)),
-            'izin' => count($this->presensiGuruModel->getPresensiByKehadiran('3', $today)),
-            'alfa' => count($this->presensiGuruModel->getPresensiByKehadiran('4', $today))
+            'hadir' => count($this->presensiDosenModel->getPresensiByKehadiran('1', $today)),
+            'sakit' => count($this->presensiDosenModel->getPresensiByKehadiran('2', $today)),
+            'izin' => count($this->presensiDosenModel->getPresensiByKehadiran('3', $today)),
+            'alfa' => count($this->presensiDosenModel->getPresensiByKehadiran('4', $today))
          ],
 
          'petugas' => $this->petugasModel->getAllPetugas(),
