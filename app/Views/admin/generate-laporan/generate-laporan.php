@@ -29,28 +29,28 @@
                   <div class="row">
                      <div class="col-md-6">
                         <div class="card h-100">
-                           <form action="<?= base_url('admin/laporan/siswa'); ?>" method="post"
+                           <form action="<?= base_url('admin/laporan/mahasiswa'); ?>" method="post"
                               class="card-body d-flex flex-column">
-                              <h4 class="text-primary"><b>Laporan Absen Siswa</b></h4>
+                              <h4 class="text-primary"><b>Laporan Absen Mahasiswa</b></h4>
                               <div class="row align-items-center">
                                  <div class="col-auto">
                                     <p class="d-inline"><b>Bulan :</b></p>
                                  </div>
                                  <div class="col-5">
-                                    <input type="month" name="tanggalSiswa" id="tanggalSiswa" class="form-control"
+                                    <input type="month" name="tanggalMahasiswa" id="tanggalMahasiswa" class="form-control"
                                        value="<?= date('Y-m'); ?>">
                                  </div>
                               </div>
                               <select name="kelas" class="custom-select mt-3">
-                                 <option value="">--Pilih kelas--</option>
+                                 <option value="">--Pilih mata kuliah--</option>
                                  <?php foreach ($kelas as $key => $value): ?>
                                     <?php
-                                    $idKelas = $value['id_kelas'];
-                                    $namaKelas = $value['kelas'];
-                                    $totalSiswa = count($siswaPerKelas[$key]);
+                                    $idMatkul = $value['id_matkul'];
+                                    $namaMatkul = $value['matkul'];
+                                    $totalMahasiswa = count($mahasiswaPerMatkul[$key]);
                                     ?>
-                                    <option value="<?= $idKelas; ?>">
-                                       <?= "$namaKelas - {$totalSiswa} siswa"; ?>
+                                    <option value="<?= $idMatkul; ?>">
+                                       <?= "$namaMatkul - {$totalMahasiswa} mahasiswa"; ?>
                                     </option>
                                  <?php endforeach; ?>
                               </select>
@@ -99,16 +99,16 @@
                      </div>
                      <div class="col-md-6">
                         <div class="card h-100">
-                           <form action="<?= base_url('admin/laporan/guru'); ?>" method="post"
+                           <form action="<?= base_url('admin/laporan/dosen'); ?>" method="post"
                               class="card-body d-flex flex-column">
-                              <h4 class="text-success"><b>Laporan Absen Guru</b></h4>
-                              <p>Total jumlah guru : <b><?= count($guru); ?></b></p>
+                              <h4 class="text-success"><b>Laporan Absen Dosen</b></h4>
+                              <p>Total jumlah dosen : <b><?= count($dosen); ?></b></p>
                               <div class="row align-items-center">
                                  <div class="col-auto">
                                     <p class="d-inline"><b>Bulan :</b></p>
                                  </div>
                                  <div class="col-5">
-                                    <input type="month" name="tanggalGuru" id="tanggalGuru" class="form-control"
+                                    <input type="month" name="tanggalDosen" id="tanggalDosen" class="form-control"
                                        value="<?= date('Y-m'); ?>">
                                  </div>
                               </div>
