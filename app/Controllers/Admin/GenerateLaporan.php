@@ -40,7 +40,7 @@ class GenerateLaporan extends BaseController
       $matkul = $this->matkulModel->getDataMatkul();
       $dosen = $this->dosenModel->getAllDosen();
 
-      $siswaPerKelas = [];
+      $mahasiswaPerMatkul = [];
 
       foreach ($matkul as $value) {
          array_push($mahasiswaPerMatkul, $this->mahasiswaModel->getMahasiswaByMatkul($value['id_matkul']));
