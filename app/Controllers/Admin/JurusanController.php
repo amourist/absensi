@@ -3,18 +3,18 @@
 namespace App\Controllers\Admin;
 
 use App\Models\JurusanModel;
-use App\Models\KelasModel;
+use App\Models\MatkulModel;
 use App\Controllers\BaseController;
 
 class JurusanController extends BaseController
 {
     protected JurusanModel $jurusanModel;
-    protected KelasModel $kelasModel;
+    protected MatkulModel $matkulModel;
 
     public function initController(\CodeIgniter\HTTP\RequestInterface $request, \CodeIgniter\HTTP\ResponseInterface $response, \Psr\Log\LoggerInterface $logger)
     {
         parent::initController($request, $response, $logger);
-        $this->kelasModel = new KelasModel();
+        $this->matkulModel = new MatkulModel();
         $this->jurusanModel = new JurusanModel();
     }
 
@@ -28,7 +28,7 @@ class JurusanController extends BaseController
         if (user()->toArray()['is_superadmin'] != '1') {
             return redirect()->to('admin');
         }
-        return redirect()->to('admin/kelas');
+        return redirect()->to('admin/matkul');
     }
 
     /**
@@ -61,7 +61,7 @@ class JurusanController extends BaseController
     public function tambahJurusan()
     {
         $data = [
-            'ctx' => 'kelas',
+            'ctx' => 'matkul',
             'title' => 'Tambah Data Jurusan',
         ];
         return view('/admin/jurusan/create', $data);
@@ -101,10 +101,10 @@ class JurusanController extends BaseController
     public function editJurusan($id)
     {
         $data['title'] = 'Edit Jurusan';
-        $data['ctx'] = 'kelas';
+        $data['ctx'] = 'matkul';
         $data['jurusan'] = $this->jurusanModel->getJurusan($id);
         if (empty($data['jurusan'])) {
-            return redirect()->to('admin/kelas');
+            return redirect()->to('admin/matkul');
         }
 
         return view('/admin/jurusan/edit', $data);
@@ -144,7 +144,7 @@ class JurusanController extends BaseController
         $id = inputPost('id');
         $jurusan = $this->jurusanModel->getJurusan($id);
         if (!empty($jurusan)) {
-            if (!empty($this->kelasModel->getKelasCountByJurusan($id))) {
+            if (!empty($this->matkulModel->getMatkulCountByJurusan($id))) {
                 $this->session->setFlashdata('error', 'Hapus Relasi Data Dulu');
                 exit();
             }

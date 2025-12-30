@@ -4,23 +4,23 @@ namespace App\Controllers\Admin;
 
 use App\Controllers\BaseController;
 
-use App\Models\GuruModel;
-use App\Models\KelasModel;
-use App\Models\SiswaModel;
+use App\Models\DosenModel;
+use App\Models\MatkulModel;
+use App\Models\MahasiswaModel;
 
 class GenerateQR extends BaseController
 {
-   protected SiswaModel $siswaModel;
-   protected KelasModel $kelasModel;
+   protected MahasiswaModel $mahasiswaModel;
+   protected MatkulModel $matkulModel;
 
-   protected GuruModel $guruModel;
+   protected DosenModel $dosenModel;
 
    public function __construct()
    {
-      $this->siswaModel = new SiswaModel();
-      $this->kelasModel = new KelasModel();
+      $this->mahasiswaModel = new MahasiswaModel();
+      $this->matkulModel = new MatkulModel();
 
-      $this->guruModel = new GuruModel();
+      $this->dosenModel = new DosenModel();
    }
 
    public function index()
@@ -31,16 +31,16 @@ class GenerateQR extends BaseController
       }
 
 
-      $siswa = $this->siswaModel->getAllSiswaWithKelas();
-      $kelas = $this->kelasModel->getDataKelas();
-      $guru = $this->guruModel->getAllGuru();
+      $mahasiswa = $this->mahasiswaModel->getAllMahasiswaWithmatkul();
+      $matkul = $this->matkulModel->getDataKelas();
+      $dosen = $this->dosenModel->getAllDosen();
 
       $data = [
          'title' => 'Generate QR Code',
          'ctx' => 'qr',
-         'siswa' => $siswa,
-         'kelas' => $kelas,
-         'guru' => $guru
+         'mahasiswa' => $mahasiswa,
+         'matkul' => $matkul,
+         'dosen' => $dosen
       ];
 
       return view('admin/generate-qr/generate-qr', $data);
@@ -48,10 +48,9 @@ class GenerateQR extends BaseController
 
    public function getSiswaByKelas()
    {
-      $idKelas = $this->request->getVar('idKelas');
+      $idMatkul = $this->request->getVar('idMatkul');
 
-      $siswa = $this->siswaModel->getSiswaByKelas($idKelas);
-
-      return $this->response->setJSON($siswa);
+      $mahasiswa = $this->mahasiswaModel->getMahasiswaByMatkul($idMatkul);
+      return $this->response->setJSON($mahasiswa);
    }
 }

@@ -3,9 +3,9 @@
 namespace App\Controllers\Admin;
 
 use App\Controllers\BaseController;
-use App\Models\GuruModel;
-use App\Models\KelasModel;
-use App\Models\SiswaModel;
+use App\Models\DosenModel;
+use App\Models\MatkulModel;
+use App\Models\MahasiswaModel;
 use Endroid\QrCode\Color\Color;
 use Endroid\QrCode\Encoding\Encoding;
 use Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelHigh;
@@ -49,7 +49,7 @@ class QRGenerator extends BaseController
          // Create logo
          $logo = (new \Config\School)::$generalSettings->logo;
          if (empty($logo) || !file_exists(FCPATH . $logo)) {
-            $logo = 'assets/img/logo_sekolah.jpg';
+            $logo = 'assets/img/logo.jpg';
          }
          if (file_exists(FCPATH . $logo)) {
             $fileExtension = pathinfo(FCPATH . $logo, PATHINFO_EXTENSION);
@@ -87,14 +87,14 @@ class QRGenerator extends BaseController
          mkdir($this->qrCodeFilePath, recursive: true);
    }
 
-   public function generateQrSiswa()
+   public function generateQrMahasiswa()
    {
-      $kelas = $this->getKelasJurusanSlug($this->request->getVar('id_kelas'));
-      if (!$kelas) {
+      $matkul = $this->getMatkulJurusanSlug($this->request->getVar('id_matkul'));
+      if (!$matkul) {
          return $this->response->setJSON(false);
       }
 
-      $this->qrCodeFilePath .= "qr-siswa/$kelas/";
+      $this->qrCodeFilePath .= "qr-Mahasiswa/$matkul/";
 
       if (!file_exists($this->qrCodeFilePath)) {
          mkdir($this->qrCodeFilePath, recursive: true);
@@ -109,12 +109,12 @@ class QRGenerator extends BaseController
       return $this->response->setJSON(true);
    }
 
-   public function generateQrGuru()
+   public function generateQrDosen()
    {
       $this->qrCode->setForegroundColor($this->foregroundColor2);
       $this->label->setTextColor($this->foregroundColor2);
 
-      $this->qrCodeFilePath .= 'qr-guru/';
+      $this->qrCodeFilePath .= 'qr-dosen/';
 
       if (!file_exists($this->qrCodeFilePath)) {
          mkdir($this->qrCodeFilePath, recursive: true);
@@ -153,20 +153,20 @@ class QRGenerator extends BaseController
       return $this->qrCodeFilePath . $filename;
    }
 
-   public function downloadQrSiswa($idSiswa = null)
+   public function downloadQrMahasiswa($idMahasiswa = null)
    {
-      $siswa = (new SiswaModel)->find($idSiswa);
-      if (!$siswa) {
+      $mahasiswa = (new MahasiswaModel)->find($idMahasiswa);
+      if (!$mahasiswa) {
          session()->setFlashdata([
-            'msg' => 'Siswa tidak ditemukan',
+            'msg' => 'Mahasiswa tidak ditemukan',
             'error' => true
          ]);
          return redirect()->back();
       }
 
       try {
-         $kelas = $this->getKelasJurusanSlug($siswa['id_kelas']) ?? 'tmp';
-         $this->qrCodeFilePath .= "qr-siswa/$kelas/";
+         $matkul = $this->getMatkulJurusanSlug($mahasiswa['id_matkul']) ?? 'tmp';
+         $this->qrCodeFilePath .= "qr-siswa/$mahasiswa/";
 
          if (!file_exists($this->qrCodeFilePath)) {
             mkdir($this->qrCodeFilePath, recursive: true);
@@ -174,9 +174,9 @@ class QRGenerator extends BaseController
 
          return $this->response->download(
             $this->generate(
-               nama: $siswa['nama_siswa'],
-               nomor: $siswa['nis'],
-               unique_code: $siswa['unique_code'],
+               nama: $mahasiswa['nama_mahasiswa'],
+               nomor: $mahasiswa['nim'],
+               unique_code: $mahasiswa['unique_code'],
             ),
             null,
             true,
@@ -190,10 +190,10 @@ class QRGenerator extends BaseController
       }
    }
 
-   public function downloadQrGuru($idGuru = null)
+   public function downloadQrGuru($idDosen = null)
    {
-      $guru = (new GuruModel)->find($idGuru);
-      if (!$guru) {
+      $dosen = (new DosenModel)->find($idDosen);
+      if (!$dosen) {
          session()->setFlashdata([
             'msg' => 'Data tidak ditemukan',
             'error' => true
@@ -204,7 +204,7 @@ class QRGenerator extends BaseController
          $this->qrCode->setForegroundColor($this->foregroundColor2);
          $this->label->setTextColor($this->foregroundColor2);
 
-         $this->qrCodeFilePath .= 'qr-guru/';
+         $this->qrCodeFilePath .= 'qr-dosen/';
 
          if (!file_exists($this->qrCodeFilePath)) {
             mkdir($this->qrCodeFilePath, recursive: true);
@@ -212,9 +212,9 @@ class QRGenerator extends BaseController
 
          return $this->response->download(
             $this->generate(
-               nama: $guru['nama_guru'],
-               nomor: $guru['nuptk'],
-               unique_code: $guru['unique_code'],
+               nama: $dosen['nama_dosen'],
+               nomor: $dosen['nip'],
+               unique_code: $dosen['unique_code'],
             ),
             null,
             true,
@@ -228,12 +228,12 @@ class QRGenerator extends BaseController
       }
    }
 
-   public function downloadAllQrSiswa()
+   public function downloadAllQrMahasiswa()
    {
-      $kelas = null;
-      if ($idKelas = $this->request->getVar('id_kelas')) {
-         $kelas = $this->getKelasJurusanSlug($idKelas);
-         if (!$kelas) {
+      $matkul = null;
+      if ($idMatkul = $this->request->getVar('id_matkul')) {
+         $matkul = $this->getMatkulJurusanSlug($idMatkul);
+         if (!$matkul) {
             session()->setFlashdata([
                'msg' => 'Kelas tidak ditemukan',
                'error' => true
@@ -242,7 +242,7 @@ class QRGenerator extends BaseController
          }
       }
 
-      $this->qrCodeFilePath .= "qr-siswa/" . ($kelas ? "{$kelas}/" : '');
+      $this->qrCodeFilePath .= "qr-mahasiswa/" . ($matkul ? "{$matkul}/" : '');
 
       if (!file_exists($this->qrCodeFilePath) || count(glob($this->qrCodeFilePath . '*')) === 0) {
          session()->setFlashdata([
@@ -253,7 +253,7 @@ class QRGenerator extends BaseController
       }
 
       try {
-         $output = self::UPLOADS_PATH . 'qrcode-siswa' . ($kelas ? "_{$kelas}.zip" : '.zip');
+         $output = self::UPLOADS_PATH . 'qrcode-siswa' . ($matkul ? "_{$matkul}.zip" : '.zip');
 
          $this->zipFolder($this->qrCodeFilePath, $output);
 
@@ -267,9 +267,9 @@ class QRGenerator extends BaseController
       }
    }
 
-   public function downloadAllQrGuru()
+   public function downloadAllQrDosen()
    {
-      $this->qrCodeFilePath .= 'qr-guru/';
+      $this->qrCodeFilePath .= 'qr-dosen/';
 
       if (!file_exists($this->qrCodeFilePath) || count(glob($this->qrCodeFilePath . '*')) === 0) {
          session()->setFlashdata([
@@ -280,7 +280,7 @@ class QRGenerator extends BaseController
       }
 
       try {
-         $output = self::UPLOADS_PATH . DIRECTORY_SEPARATOR . 'qrcode-guru.zip';
+         $output = self::UPLOADS_PATH . DIRECTORY_SEPARATOR . 'qrcode-dosen.zip';
 
          $this->zipFolder($this->qrCodeFilePath, $output);
 
@@ -325,17 +325,17 @@ class QRGenerator extends BaseController
       $zip->close();
    }
 
-   protected function kelas(string $unique_code)
+   protected function matkul(string $unique_code)
    {
-      return self::UPLOADS_PATH . DIRECTORY_SEPARATOR . "qr-siswa/{$unique_code}.png";
+      return self::UPLOADS_PATH . DIRECTORY_SEPARATOR . "qr-mahasiswa/{$unique_code}.png";
    }
 
-   protected function getKelasJurusanSlug(string $idKelas)
+   protected function getMatkulJurusanSlug(string $idMatkul)
    {
-      $kelas = (new KelasModel)->getKelas($idKelas);
+      $matkul = (new MatkulModel)->getMatkul($idMatkul);
       ;
-      if ($kelas) {
-         return url_title($kelas->kelas, lowercase: true);
+      if ($matkul) {
+         return url_title($matkul->matkul, lowercase: true);
       } else {
          return false;
       }

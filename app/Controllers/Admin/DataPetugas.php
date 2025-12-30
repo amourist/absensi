@@ -11,7 +11,7 @@ use Myth\Auth\Password;
 class DataPetugas extends BaseController
 {
    protected PetugasModel $petugasModel;
-   protected \App\Models\GuruModel $guruModel;
+   protected \App\Models\DosenModel $dosenModel;
 
    protected $petugasValidationRules = [
       'email' => [
@@ -43,7 +43,7 @@ class DataPetugas extends BaseController
    public function __construct()
    {
       $this->petugasModel = new PetugasModel();
-      $this->guruModel = new \App\Models\GuruModel();
+      $this->dosenModel = new \App\Models\DosenModel();
    }
 
    public function index()
@@ -81,7 +81,7 @@ class DataPetugas extends BaseController
       $data = [
          'title' => 'Register Petugas',
          'ctx' => 'petugas',
-         'guru' => $this->guruModel->getAllGuru()
+         'dosen' => $this->dosenModel->getAllDosen()
       ];
 
       return view('admin/petugas/register', $data);
@@ -106,9 +106,9 @@ class DataPetugas extends BaseController
       $password = $this->request->getVar('password');
       $passwordHash = Password::hash($password);
       $role = $this->request->getVar('role');
-      $id_guru = $this->request->getVar('id_guru') ?: null;
+      $id_dosen = $this->request->getVar('id_dosen') ?: null;
 
-      $result = $this->petugasModel->savePetugas(null, $email, $username, $passwordHash, $role, $id_guru, 1);
+      $result = $this->petugasModel->savePetugas(null, $email, $username, $passwordHash, $role, $id_dosen, 1);
 
       if ($result) {
          session()->setFlashdata([
@@ -137,7 +137,7 @@ class DataPetugas extends BaseController
          'data' => $petugas,
          'ctx' => 'petugas',
          'title' => 'Edit Data Petugas',
-         'guru' => $this->guruModel->getAllGuru()
+         'dosen' => $this->dosenModel->getAllDosen()
       ];
 
       return view('admin/petugas/edit-data-petugas', $data);
@@ -175,9 +175,9 @@ class DataPetugas extends BaseController
       $username = $this->request->getVar('username');
       $passwordHash = $password ? Password::hash($password) : $petugasLama['password_hash'];
       $role = $this->request->getVar('role');
-      $id_guru = $this->request->getVar('id_guru') ?: null;
+      $id_dosen = $this->request->getVar('id_dosen') ?: null;
 
-      $result = $this->petugasModel->savePetugas($idPetugas, $email, $username, $passwordHash, $role, $id_guru, $petugasLama['active']);
+      $result = $this->petugasModel->savePetugas($idPetugas, $email, $username, $passwordHash, $role, $id_dosen, $petugasLama['active']);
 
       if ($result) {
          session()->setFlashdata([

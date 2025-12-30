@@ -2,27 +2,27 @@
 
 namespace App\Controllers\Admin;
 
-use App\Models\SiswaModel;
-use App\Models\KelasModel;
+use App\Models\MahasiswaModel;
+use App\Models\MatkulModel;
 
 use App\Controllers\BaseController;
 use App\Models\JurusanModel;
 use App\Models\UploadModel;
 use CodeIgniter\Exceptions\PageNotFoundException;
 
-class DataSiswa extends BaseController
+class DataMahasiswa extends BaseController
 {
-   protected SiswaModel $siswaModel;
-   protected KelasModel $kelasModel;
+   protected MahasiswaModel $mahasiswaModel;
+   protected MatkulModel $matkulModel;
    protected JurusanModel $jurusanModel;
 
-   protected $siswaValidationRules = [
+   protected $mahasiswaValidationRules = [
       'nis' => [
          'rules' => 'required|max_length[20]|min_length[4]',
          'errors' => [
-            'required' => 'NIS harus diisi.',
-            'is_unique' => 'NIS ini telah terdaftar.',
-            'min_length[4]' => 'Panjang NIS minimal 4 karakter'
+            'required' => 'NIM harus diisi.',
+            'is_unique' => 'NIM ini telah terdaftar.',
+            'min_length[4]' => 'Panjang NIM minimal 4 karakter'
          ]
       ],
       'nama' => [
@@ -31,10 +31,10 @@ class DataSiswa extends BaseController
             'required' => 'Nama harus diisi'
          ]
       ],
-      'id_kelas' => [
+      'id_matkul' => [
          'rules' => 'required',
          'errors' => [
-            'required' => 'Kelas harus diisi'
+            'required' => 'matkul harus diisi'
          ]
       ],
       'jk' => ['rules' => 'required', 'errors' => ['required' => 'Jenis kelamin wajib diisi']],
@@ -49,8 +49,8 @@ class DataSiswa extends BaseController
 
    public function __construct()
    {
-      $this->siswaModel = new SiswaModel();
-      $this->kelasModel = new KelasModel();
+      $this->mahasiswaModel = new MahasiswaModel();
+      $this->matkulModel = new matkulModel();
       $this->jurusanModel = new JurusanModel();
    }
 
@@ -65,62 +65,62 @@ class DataSiswa extends BaseController
       $data = [
          'title' => 'Data Siswa',
          'ctx' => 'siswa',
-         'kelas' => $this->kelasModel->getDataKelas(),
+         'matkul' => $this->matkulModel->getDataMatkul(),
          'jurusan' => $this->jurusanModel->getDataJurusan()
       ];
 
-      return view('admin/data/data-siswa', $data);
+      return view('admin/data/data-matkul', $data);
    }
 
-   public function ambilDataSiswa()
+   public function ambilDataMahasiswa()
    {
-      $kelas = $this->request->getVar('kelas') ?? null;
+      $matkul = $this->request->getVar('matkul') ?? null;
       $jurusan = $this->request->getVar('jurusan') ?? null;
 
-      $result = $this->siswaModel->getAllSiswaWithKelas($kelas, $jurusan);
+      $result = $this->mahasiswaModel->getAllMahasiswaWithKelas($matkul, $jurusan);
 
       $data = [
          'data' => $result,
          'empty' => empty($result)
       ];
 
-      return view('admin/data/list-data-siswa', $data);
+      return view('admin/data/list-data-mahasiswa', $data);
    }
 
-   public function formTambahSiswa()
+   public function formTambahMahasiswa()
    {
-      $kelas = $this->kelasModel->getDataKelas();
+      $matkul = $this->matkulModel->getDataMatkul();
 
       $data = [
-         'ctx' => 'siswa',
-         'kelas' => $kelas,
-         'title' => 'Tambah Data Siswa'
+         'ctx' => 'mahasiswa',
+         'matkul' => $matkul,
+         'title' => 'Tambah Data Mahasiswa'
       ];
 
-      return view('admin/data/create/create-data-siswa', $data);
+      return view('admin/data/create/create-data-mahasiswa', $data);
    }
 
-   public function saveSiswa()
+   public function saveMahasiswa()
    {
       // validasi
-      if (!$this->validate($this->siswaValidationRules)) {
-         $kelas = $this->kelasModel->getDataKelas();
+      if (!$this->validate($this->mahasiswaValidationRules)) {
+         $matkul = $this->matkulModel->getDataMatkul();
 
          $data = [
-            'ctx' => 'siswa',
-            'kelas' => $kelas,
-            'title' => 'Tambah Data Siswa',
+            'ctx' => 'mahasiswa',
+            'kelas' => $matkul,
+            'title' => 'Tambah Data Mahasiswa',
             'validation' => $this->validator,
             'oldInput' => $this->request->getVar()
          ];
-         return view('/admin/data/create/create-data-siswa', $data);
+         return view('/admin/data/create/create-data-mahasiswa', $data);
       }
 
       // simpan
-      $result = $this->siswaModel->createSiswa(
-         nis: $this->request->getVar('nis'),
+      $result = $this->mahasiswaModel->createMahasiswa(
+         nim: $this->request->getVar('nim'),
          nama: $this->request->getVar('nama'),
-         idKelas: intval($this->request->getVar('id_kelas')),
+         idMatkul: intval($this->request->getVar('id_matkul')),
          jenisKelamin: $this->request->getVar('jk'),
          noHp: $this->request->getVar('no_hp'),
          rfid: $this->request->getVar('rfid')
@@ -131,71 +131,71 @@ class DataSiswa extends BaseController
             'msg' => 'Tambah data berhasil',
             'error' => false
          ]);
-         return redirect()->to('/admin/siswa');
+         return redirect()->to('/admin/mahasiswa');
       }
 
       session()->setFlashdata([
          'msg' => 'Gagal menambah data',
          'error' => true
       ]);
-      return redirect()->to('/admin/siswa/create');
+      return redirect()->to('/admin/mahasiswa/create');
    }
 
-   public function formEditSiswa($id)
+   public function formEditMahasiswa($id)
    {
-      $siswa = $this->siswaModel->getSiswaById($id);
-      $kelas = $this->kelasModel->getDataKelas();
+      $mahasiswa = $this->mahasiswaModel->getMahasiswaById($id);
+      $matkul = $this->matkulModel->getDataMatkul();
 
-      if (empty($siswa) || empty($kelas)) {
-         throw new PageNotFoundException('Data siswa dengan id ' . $id . ' tidak ditemukan');
+      if (empty($mahasiswa) || empty($matkul)) {
+         throw new PageNotFoundException('Data mahasiswa dengan id ' . $id . ' tidak ditemukan');
       }
 
       $data = [
-         'data' => $siswa,
-         'kelas' => $kelas,
-         'ctx' => 'siswa',
-         'title' => 'Edit Siswa',
+         'data' => $mahasiswa,
+         'matkul' => $matkul,
+         'ctx' => 'mahasiswa',
+         'title' => 'Edit Mahasiswa',
       ];
 
-      return view('admin/data/edit/edit-data-siswa', $data);
+      return view('admin/data/edit/edit-data-mahasiswa', $data);
    }
 
-   public function updateSiswa()
+   public function updateMahasiswa()
    {
-      $idSiswa = $this->request->getVar('id');
+      $idMahasiswa = $this->request->getVar('id');
 
-      $this->siswaValidationRules['rfid']['rules'] = "permit_empty|is_rfid_unique[{$idSiswa},siswa]";
+      $this->mahasiswaValidationRules['rfid']['rules'] = "permit_empty|is_rfid_unique[{$idMahasiswa},mahasiswa]";
 
-      $siswaLama = $this->siswaModel->getSiswaById($idSiswa);
+      $mahasiswaLama = $this->mahasiswaModel->getMahasiswaById($idMahasiswa);
 
-      if ($siswaLama['nis'] != $this->request->getVar('nis')) {
-         $this->siswaValidationRules['nis']['rules'] = 'required|max_length[20]|min_length[4]|is_unique[tb_siswa.nis]';
+      if ($mahasiswaLama['nim'] != $this->request->getVar('nis')) {
+         $this->mahasiswaValidationRules['nim']['rules'] = 'required|max_length[20]|min_length[4]|is_unique[tb_mahasiswa.nim]';
       }
 
-      $this->siswaValidationRules['rfid']['rules'] = "permit_empty|is_rfid_unique[{$idSiswa},siswa]";
+      $this->mahasiswaValidationRules['rfid']['rules'] = "permit_empty|is_rfid_unique[{$idMahasiswa},mahasiswa]";
 
       // validasi
-      if (!$this->validate($this->siswaValidationRules)) {
-         $siswa = $this->siswaModel->getSiswaById($idSiswa);
-         $kelas = $this->kelasModel->getDataKelas();
+      if (!$this->validate($this->mahasiswaValidationRules)) {
+         $mahasiswa = $this->mahasiswaModel->getMahasiswaById($idMahasiswa);
+         $matkul = $this->matkulModel->getDataMatkul();
 
          $data = [
-            'data' => $siswa,
-            'kelas' => $kelas,
-            'ctx' => 'siswa',
-            'title' => 'Edit Siswa',
+            'data' => $mahasiswa,
+            'matkul' => $matkul,
+            'ctx' => 'mahasiswa',
+            'title' => 'Edit Mahasiswa',
             'validation' => $this->validator,
             'oldInput' => $this->request->getVar()
          ];
-         return view('/admin/data/edit/edit-data-siswa', $data);
+         return view('/admin/data/edit/edit-data-mahasiswa', $data);
       }
 
       // update
-      $result = $this->siswaModel->updateSiswa(
-         id: $idSiswa,
-         nis: $this->request->getVar('nis'),
+      $result = $this->mahasiswaModel->updateMahasiswa(
+         id: $idMahasiswa,
+         nim: $this->request->getVar('nim'),
          nama: $this->request->getVar('nama'),
-         idKelas: intval($this->request->getVar('id_kelas')),
+         idMatkul: intval($this->request->getVar('id_matkul')),
          jenisKelamin: $this->request->getVar('jk'),
          noHp: $this->request->getVar('no_hp'),
          rfid: $this->request->getVar('rfid')
@@ -206,60 +206,60 @@ class DataSiswa extends BaseController
             'msg' => 'Edit data berhasil',
             'error' => false
          ]);
-         return redirect()->to('/admin/siswa');
+         return redirect()->to('/admin/mahasiswa');
       }
 
       session()->setFlashdata([
          'msg' => 'Gagal mengubah data',
          'error' => true
       ]);
-      return redirect()->to('/admin/siswa/edit/' . $idSiswa);
+      return redirect()->to('/admin/mahasiswa/edit/' . $idMahasiswa);
    }
 
    public function delete($id)
    {
-      $result = $this->siswaModel->delete($id);
+      $result = $this->mahasiswaModel->delete($id);
 
       if ($result) {
          session()->setFlashdata([
             'msg' => 'Data berhasil dihapus',
             'error' => false
          ]);
-         return redirect()->to('/admin/siswa');
+         return redirect()->to('/admin/mahasiswa');
       }
 
       session()->setFlashdata([
          'msg' => 'Gagal menghapus data',
          'error' => true
       ]);
-      return redirect()->to('/admin/siswa');
+      return redirect()->to('/admin/mahasiswa');
    }
 
    /**
     * Delete Selected Posts
     */
-   public function deleteSelectedSiswa()
+   public function deleteSelectedMahasiswa()
    {
-      $siswaIds = inputPost('siswa_ids');
-      $this->siswaModel->deleteMultiSelected($siswaIds);
+      $mahasiswaIds = inputPost('mahasiswa_ids');
+      $this->mahasiswaModel->deleteMultiSelected($mahasiswaIds);
    }
 
    /*
     *-------------------------------------------------------------------------------------------------
-    * IMPORT SISWA
+    * IMPORT MAHASISWA
     *-------------------------------------------------------------------------------------------------
     */
 
    /**
     * Bulk Post Upload
     */
-   public function bulkPostSiswa()
+   public function bulkPostMahasiswa()
    {
-      $data['title'] = 'Import Siswa';
-      $data['ctx'] = 'siswa';
-      $data['kelas'] = $this->kelasModel->getDataKelas();
+      $data['title'] = 'Import Mahasiswa';
+      $data['ctx'] = 'mahasiswa';
+      $data['matkul'] = $this->matkulModel->getDataMatkul();
 
-      return view('/admin/data/import-siswa', $data);
+      return view('/admin/data/import-mahasiswa', $data);
    }
 
    /**
@@ -277,7 +277,7 @@ class DataSiswa extends BaseController
       }
       $file = $uploadModel->uploadCSVFile('file');
       if (!empty($file) && !empty($file['path'])) {
-         $obj = $this->siswaModel->generateCSVObject($file['path']);
+         $obj = $this->mahasiswaModel->generateCSVObject($file['path']);
          if (!empty($obj)) {
             $data = [
                'result' => 1,
@@ -298,11 +298,11 @@ class DataSiswa extends BaseController
    {
       $txtFileName = inputPost('txtFileName');
       $index = inputPost('index');
-      $siswa = $this->siswaModel->importCSVItem($txtFileName, $index);
-      if (!empty($siswa)) {
+      $mahasiswa = $this->mahasiswaModel->importCSVItem($txtFileName, $index);
+      if (!empty($mahasiswa)) {
          $data = [
             'result' => 1,
-            'siswa' => $siswa,
+            'mahasiswa' => $mahasiswa,
             'index' => $index
          ];
          echo json_encode($data);
@@ -322,10 +322,10 @@ class DataSiswa extends BaseController
    {
       $submit = inputPost('submit');
       $response = \Config\Services::response();
-      if ($submit == 'csv_siswa_template') {
-         return $response->download(FCPATH . 'assets/file/csv_siswa_template.csv', null);
-      } elseif ($submit == 'csv_guru_template') {
-         return $response->download(FCPATH . 'assets/file/csv_guru_template.csv', null);
+      if ($submit == 'csv_mahasiswa_template') {
+         return $response->download(FCPATH . 'assets/file/csv_mahasiswa_template.csv', null);
+      } elseif ($submit == 'csv_dosen_template') {
+         return $response->download(FCPATH . 'assets/file/csv_dosen_template.csv', null);
       }
    }
 }

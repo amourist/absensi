@@ -8,72 +8,72 @@ use DateTime;
 use DateInterval;
 use DatePeriod;
 
-use App\Models\GuruModel;
-use App\Models\KelasModel;
-use App\Models\PresensiGuruModel;
-use App\Models\SiswaModel;
-use App\Models\PresensiSiswaModel;
+use App\Models\DosenModel;
+use App\Models\MatkulModel;
+use App\Models\PresensiDosenModel;
+use App\Models\MahasiswaModel;
+use App\Models\PresensiMahasiswaModel;
 
 class GenerateLaporan extends BaseController
 {
-   protected SiswaModel $siswaModel;
-   protected KelasModel $kelasModel;
+   protected MahasiswaModel $mahasiswaModel;
+   protected MatkulModel $matkulModel;
 
-   protected GuruModel $guruModel;
+   protected DosenModel $dosenModel;
 
-   protected PresensiSiswaModel $presensiSiswaModel;
-   protected PresensiGuruModel $presensiGuruModel;
+   protected PresensiMahasiswaModel $presensiMahasiswaModel;
+   protected PresensiDosenModel $presensiDosenModel;
 
    public function __construct()
    {
-      $this->siswaModel = new SiswaModel();
-      $this->kelasModel = new KelasModel();
+      $this->mahasiswaModel = new MahasiswaModel();
+      $this->matkulModel = new MatkulModel();
 
-      $this->guruModel = new GuruModel();
+      $this->dosenModel = new DosenModel();
 
-      $this->presensiSiswaModel = new PresensiSiswaModel();
-      $this->presensiGuruModel = new PresensiGuruModel();
+      $this->presensiMahasiswaModel = new PresensiMahasiswaModel();
+      $this->presensiDosenModel = new PresensiDosenModel();
    }
 
    public function index()
    {
-      $kelas = $this->kelasModel->getDataKelas();
-      $guru = $this->guruModel->getAllGuru();
+      $matkul = $this->matkulModel->getDataMatkul();
+      $dosen = $this->dosenModel->getAllDosen();
 
       $siswaPerKelas = [];
 
-      foreach ($kelas as $value) {
-         array_push($siswaPerKelas, $this->siswaModel->getSiswaByKelas($value['id_kelas']));
+      foreach ($matkul as $value) {
+         array_push($mahasiswaPerMatkul, $this->mahasiswaModel->getMahasiswaByMatkul($value['id_matkul']));
       }
 
       $data = [
          'title' => 'Generate Laporan',
          'ctx' => 'laporan',
-         'siswaPerKelas' => $siswaPerKelas,
-         'kelas' => $kelas,
-         'guru' => $guru
+         'mahasiswaPerMatkul' => $mahasiswaPerMatkul,
+         'matkul' => $matkul,
+         'dosen' => $dosen
       ];
 
       return view('admin/generate-laporan/generate-laporan', $data);
    }
 
-   public function generateLaporanSiswa()
+   public function generateLaporanMahasiswa()
    {
-      $idKelas = $this->request->getVar('kelas');
-      $siswa = $this->siswaModel->getSiswaByKelas($idKelas);
+      $idMatkul = $this->request->getVar('matkul');
+      $mahasiswa = $this->mahasiswaModel->getMahasiswaByMatkul($idMatkul);
       $type = $this->request->getVar('type');
 
-      if (empty($siswa)) {
+      if (empty($mahasiswa)) {
          session()->setFlashdata([
-            'msg' => 'Data siswa kosong!',
+            'msg' => 'Data mahasiswa kosong!',
             'error' => true
          ]);
          return redirect()->to('/admin/laporan');
       }
 
-      $kelas = (array) $this->kelasModel->getKelas($idKelas);
+      $matkul = (array) $this->matkulModel->getMatkul($idMatkul);
 
-      $bulan = $this->request->getVar('tanggalSiswa');
+      $bulan = $this->request->getVar('tanggalMahasiswa');
 
       // hari pertama dalam 1 bulan
       $begin = new Time($bulan, locale: 'id');
@@ -92,8 +92,8 @@ class GenerateLaporan extends BaseController
          if (!($value->format('D') == 'Sat' || $value->format('D') == 'Sun')) {
             $lewat = Time::parse($value->format('Y-m-d'))->isAfter(Time::today());
 
-            $absenByTanggal = $this->presensiSiswaModel
-               ->getPresensiByKelasTanggal($idKelas, $value->format('Y-m-d'));
+            $absenByTanggal = $this->presensiMahasiswaModel
+               ->getPresensiByMatkulTanggal($idMatkul, $value->format('Y-m-d'));
 
             $absenByTanggal['lewat'] = $lewat;
 
@@ -104,7 +104,7 @@ class GenerateLaporan extends BaseController
 
       $laki = 0;
 
-      foreach ($siswa as $value) {
+      foreach ($mahasiswa as $value) {
          if ($value['jenis_kelamin'] != 'Perempuan') {
             $laki++;
          }
@@ -114,42 +114,42 @@ class GenerateLaporan extends BaseController
          'tanggal' => $arrayTanggal,
          'bulan' => $begin->toLocalizedString('MMMM'),
          'listAbsen' => $dataAbsen,
-         'listSiswa' => $siswa,
-         'rekapSiswa' => [
+         'listmahasiswa' => $mahasiswa,
+         'rekapMahasiswa' => [
             'laki' => $laki,
-            'perempuan' => count($siswa) - $laki
+            'perempuan' => count($mahasiswa) - $laki
          ],
-         'kelas' => $kelas,
-         'grup' => "kelas " . $kelas['kelas'],
+         'matkul' => $matkul,
+         'grup' => "matkul " . $matkul['matkul'],
       ];
 
       if ($type == 'doc') {
          $this->response->setHeader('Content-type', 'application/vnd.ms-word');
          $this->response->setHeader(
             'Content-Disposition',
-            'attachment;Filename=laporan_absen_' . $kelas['kelas'] . '_' . $begin->toLocalizedString('MMMM-Y') . '.doc'
+            'attachment;Filename=laporan_absen_' . $matkul['matkul'] . '_' . $begin->toLocalizedString('MMMM-Y') . '.doc'
          );
 
-         return view('admin/generate-laporan/laporan-siswa', $data);
+         return view('admin/generate-laporan/laporan-mahasiswa', $data);
       }
 
-      return view('admin/generate-laporan/laporan-siswa', $data) . view('admin/generate-laporan/topdf');
+      return view('admin/generate-laporan/laporan-mahasiswa', $data) . view('admin/generate-laporan/topdf');
    }
 
-   public function generateLaporanGuru()
+   public function generateLaporanDosen()
    {
-      $guru = $this->guruModel->getAllGuru();
+      $dosen = $this->dosenModel->getAllDosen();
       $type = $this->request->getVar('type');
 
-      if (empty($guru)) {
+      if (empty($dosen)) {
          session()->setFlashdata([
-            'msg' => 'Data guru kosong!',
+            'msg' => 'Data dosen kosong!',
             'error' => true
          ]);
          return redirect()->to('/admin/laporan');
       }
 
-      $bulan = $this->request->getVar('tanggalGuru');
+      $bulan = $this->request->getVar('tanggalDosen');
 
       // hari pertama dalam 1 bulan
       $begin = new Time($bulan, locale: 'id');
@@ -168,7 +168,7 @@ class GenerateLaporan extends BaseController
          if (!($value->format('D') == 'Sat' || $value->format('D') == 'Sun')) {
             $lewat = Time::parse($value->format('Y-m-d'))->isAfter(Time::today());
 
-            $absenByTanggal = $this->presensiGuruModel
+            $absenByTanggal = $this->presensiDosenModel
                ->getPresensiByTanggal($value->format('Y-m-d'));
 
             $absenByTanggal['lewat'] = $lewat;
@@ -180,7 +180,7 @@ class GenerateLaporan extends BaseController
 
       $laki = 0;
 
-      foreach ($guru as $value) {
+      foreach ($dosen as $value) {
          if ($value['jenis_kelamin'] != 'Perempuan') {
             $laki++;
          }
@@ -190,24 +190,24 @@ class GenerateLaporan extends BaseController
          'tanggal' => $arrayTanggal,
          'bulan' => $begin->toLocalizedString('MMMM'),
          'listAbsen' => $dataAbsen,
-         'listGuru' => $guru,
-         'jumlahGuru' => [
+         'listDosen' => $dosen,
+         'jumlahDosen' => [
             'laki' => $laki,
-            'perempuan' => count($guru) - $laki
+            'perempuan' => count($dosen) - $laki
          ],
-         'grup' => 'guru',
+         'dosen' => 'dosen',
       ];
 
       if ($type == 'doc') {
          $this->response->setHeader('Content-type', 'application/vnd.ms-word');
          $this->response->setHeader(
             'Content-Disposition',
-            'attachment;Filename=laporan_absen_guru_' . $begin->toLocalizedString('MMMM-Y') . '.doc'
+            'attachment;Filename=laporan_absen_dosen_' . $begin->toLocalizedString('MMMM-Y') . '.doc'
          );
 
-         return view('admin/generate-laporan/laporan-guru', $data);
+         return view('admin/generate-laporan/laporan-dosen', $data);
       }
 
-      return view('admin/generate-laporan/laporan-guru', $data) . view('admin/generate-laporan/topdf');
+      return view('admin/generate-laporan/laporan-dosen', $data) . view('admin/generate-laporan/topdf');
    }
 }
