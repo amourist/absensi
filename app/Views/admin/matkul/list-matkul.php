@@ -23,7 +23,7 @@
             </a>
             <button
               onclick='deleteItem("admin/matkul/deleteMatkulPost","<?= $value["id_matkul"]; ?>","Konfirmasi untuk menghapus data");'
-              class="btn btn-danger p-2" id="<?= $value['id_kelas']; ?>">
+              class="btn btn-danger p-2" id="<?= $value['id_matkul']; ?>">
               <i class="material-icons">delete_forever</i>
               Delete
             </button>
