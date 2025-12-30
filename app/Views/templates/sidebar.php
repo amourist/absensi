@@ -1,13 +1,13 @@
 <?php
 $context = $ctx ?? 'dashboard';
 switch ($context) {
-   case 'absen-siswa':
-   case 'siswa':
-   case 'kelas':
+   case 'absen-mahasiswa':
+   case 'mahasiswa':
+   case 'matkul':
       $sidebarColor = 'purple';
       break;
-   case 'absen-guru':
-   case 'guru':
+   case 'absen-dosen':
+   case 'dosen':
       $sidebarColor = 'green';
       break;
 
@@ -34,23 +34,23 @@ switch ($context) {
    </div>
    <div class="sidebar-wrapper">
       <ul class="nav">
-         <?php if (empty(user()->id_guru)): ?>
+         <?php if (empty(user()->id_dosen)): ?>
             <li class="nav-item <?= $context == 'dashboard' ? 'active' : ''; ?>">
                <a class="nav-link" href="<?= base_url('admin/dashboard'); ?>">
                   <i class="material-icons">dashboard</i>
                   <p>Dashboard</p>
                </a>
             </li>
-            <li class="nav-item <?= $context == 'absen-siswa' ? 'active' : ''; ?>">
-               <a class="nav-link" href="<?= base_url('admin/absen-siswa'); ?>">
+            <li class="nav-item <?= $context == 'absen-mahasiswa' ? 'active' : ''; ?>">
+               <a class="nav-link" href="<?= base_url('admin/absen-mahasiswa'); ?>">
                   <i class="material-icons">checklist</i>
-                  <p>Absensi Siswa</p>
+                  <p>Absensi Mahasiswa</p>
                </a>
             </li>
-            <li class="nav-item <?= $context == 'absen-guru' ? 'active' : ''; ?>">
-               <a class="nav-link" href="<?= base_url('admin/absen-guru'); ?>">
+            <li class="nav-item <?= $context == 'absen-dosen' ? 'active' : ''; ?>">
+               <a class="nav-link" href="<?= base_url('admin/absen-dosen'); ?>">
                   <i class="material-icons">checklist</i>
-                  <p>Absensi Guru</p>
+                  <p>Absensi Dosen</p>
                </a>
             </li>
          <?php endif; ?>
@@ -65,27 +65,27 @@ switch ($context) {
          <?php endif; ?>
 
 
-         <?php if (!empty(user()->id_guru)): ?>
+         <?php if (!empty(user()->id_dosen)): ?>
             <li class="nav-item <?= $context == 'dashboard' ? 'active' : ''; ?>">
-               <a class="nav-link" href="<?= base_url('teacher/dashboard'); ?>">
+               <a class="nav-link" href="<?= base_url('lecture/dashboard'); ?>">
                   <i class="material-icons">dashboard</i>
-                  <p>Dashboard Wali Kelas</p>
+                  <p>Dashboard Dosen</p>
                </a>
             </li>
             <li class="nav-item <?= $context == 'laporan' ? 'active' : ''; ?>">
-               <a class="nav-link" href="<?= base_url('teacher/laporan'); ?>">
+               <a class="nav-link" href="<?= base_url('lecture/laporan'); ?>">
                   <i class="material-icons">print</i>
-                  <p>Laporan Kelas</p>
+                  <p>Laporan Matkul</p>
                </a>
             </li>
             <li class="nav-item <?= $context == 'qr' ? 'active' : ''; ?>">
-               <a class="nav-link" href="<?= base_url('teacher/qr'); ?>">
+               <a class="nav-link" href="<?= base_url('lecture/qr'); ?>">
                   <i class="material-icons">qr_code</i>
-                  <p>QR Code Siswa</p>
+                  <p>QR Code Mahasiswa</p>
                </a>
             </li>
             <li class="nav-item <?= $context == 'attendance' ? 'active' : '' ?>">
-               <a class="nav-link" href="<?= base_url('teacher/attendance'); ?>">
+               <a class="nav-link" href="<?= base_url('lecture/attendance'); ?>">
                   <i class="material-icons">event_note</i>
                   <p>Manajemen Kehadiran</p>
                </a>
@@ -93,21 +93,21 @@ switch ($context) {
          <?php endif; ?>
 
          <?php if (user()->toArray()['is_superadmin'] == 1): ?>
-            <li class="nav-item <?= $context == 'siswa' ? 'active' : ''; ?>">
-               <a class="nav-link" href="<?= base_url('admin/siswa'); ?>">
+            <li class="nav-item <?= $context == 'mahasiswa' ? 'active' : ''; ?>">
+               <a class="nav-link" href="<?= base_url('admin/mahasiswa'); ?>">
                   <i class="material-icons">person</i>
-                  <p>Data Siswa</p>
+                  <p>Data Mahasiswa</p>
                </a>
             </li>
-            <li class="nav-item <?= $context == 'guru' ? 'active' : ''; ?>">
-               <a class="nav-link" href="<?= base_url('admin/guru'); ?>">
+            <li class="nav-item <?= $context == 'dosen' ? 'active' : ''; ?>">
+               <a class="nav-link" href="<?= base_url('admin/dosen'); ?>">
                   <i class="material-icons">person_4</i>
-                  <p>Data Guru</p>
+                  <p>Data Dosen</p>
                </a>
             </li>
-            <li class="nav-item <?= $context == 'kelas' ? 'active' : ''; ?>">
-               <a class="nav-link" href="<?= base_url('admin/kelas'); ?>">
-                  <i class="material-icons">school</i>
+            <li class="nav-item <?= $context == 'matkul' ? 'active' : ''; ?>">
+               <a class="nav-link" href="<?= base_url('admin/matkul'); ?>">
+                  <i class="material-icons">Prodi</i>
                   <p>Data Kelas & Jurusan</p>
                </a>
             </li>

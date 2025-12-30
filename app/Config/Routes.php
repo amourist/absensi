@@ -51,15 +51,15 @@ $routes->group('admin', function (RouteCollection $routes) {
    $routes->get('', 'Admin\Dashboard::index');
    $routes->get('dashboard', 'Admin\Dashboard::index');
 
-   // Kelas
-   $routes->group('kelas', ['namespace' => 'App\Controllers\Admin'], function ($routes) {
-      $routes->get('/', 'KelasController::index');
-      $routes->get('tambah', 'KelasController::tambahKelas');
-      $routes->post('tambahKelasPost', 'KelasController::tambahKelasPost');
-      $routes->get('edit/(:any)', 'KelasController::editKelas/$1');
-      $routes->post('editKelasPost', 'KelasController::editKelasPost');
-      $routes->post('deleteKelasPost', 'KelasController::deleteKelasPost');
-      $routes->post('list-data', 'KelasController::listData');
+   // Matkul
+   $routes->group('matkul', ['namespace' => 'App\Controllers\Admin'], function ($routes) {
+      $routes->get('/', 'MatkulController::index');
+      $routes->get('tambah', 'MatkulController::tambahMatkul');
+      $routes->post('tambahMatkulPost', 'MatkulController::tambahMatkulPost');
+      $routes->get('edit/(:any)', 'MatkulController::editMatkul/$1');
+      $routes->post('editMatkulPost', 'MatkulController::editMatkulPost');
+      $routes->post('deleteMatkulPost', 'MatkulController::deleteMatkulPost');
+      $routes->post('list-data', 'MatkulController::listData');
    });
 
    // Jurusan
@@ -73,72 +73,72 @@ $routes->group('admin', function (RouteCollection $routes) {
       $routes->post('list-data', 'JurusanController::listData');
    });
 
-   // admin lihat data siswa
-   $routes->get('siswa', 'Admin\DataSiswa::index');
-   $routes->post('siswa', 'Admin\DataSiswa::ambilDataSiswa');
+   // admin lihat data mahasiswa
+   $routes->get('mahasiswa', 'Admin\DataMahasiswa::index');
+   $routes->post('mahasiswa', 'Admin\DataMahasiswa::ambilDataMahasiswa');
    // admin tambah data siswa
-   $routes->get('siswa/create', 'Admin\DataSiswa::formTambahSiswa');
-   $routes->post('siswa/create', 'Admin\DataSiswa::saveSiswa');
+   $routes->get('mahasiswa/create', 'Admin\DataMahasiswa::formTambahMahasiswa');
+   $routes->post('mahasiswa/create', 'Admin\DataMahasiswa::saveMahasiswa');
    // admin edit data siswa
-   $routes->get('siswa/edit/(:any)', 'Admin\DataSiswa::formEditSiswa/$1');
-   $routes->post('siswa/edit', 'Admin\DataSiswa::updateSiswa');
+   $routes->get('mahasiswa/edit/(:any)', 'Admin\DataMahasiswa::formEditMahasiswa/$1');
+   $routes->post('mahasiswa/edit', 'Admin\DataMahasiswa::updateMahasiswa');
    // admin hapus data siswa
-   $routes->delete('siswa/delete/(:any)', 'Admin\DataSiswa::delete/$1');
-   $routes->get('siswa/bulk', 'Admin\DataSiswa::bulkPostSiswa');
+   $routes->delete('mahasiswa/delete/(:any)', 'Admin\DataMahasiswa::delete/$1');
+   $routes->get('mahasiswa/bulk', 'Admin\DataMahasiswa::bulkPostMahasiswa');
 
-   // POST Data Siswa
+   // POST Data Mahasiswa
 
-   $routes->group('siswa', ['namespace' => 'App\Controllers\Admin'], function ($routes) {
-      $routes->post('downloadCSVFilePost', 'DataSiswa::downloadCSVFilePost');
-      $routes->post('generateCSVObjectPost', 'DataSiswa::generateCSVObjectPost');
-      $routes->post('importCSVItemPost', 'DataSiswa::importCSVItemPost');
-      $routes->post('deleteSelectedSiswa', 'DataSiswa::deleteSelectedSiswa');
+   $routes->group('mahasiswa', ['namespace' => 'App\Controllers\Admin'], function ($routes) {
+      $routes->post('downloadCSVFilePost', 'DataMahasiswa::downloadCSVFilePost');
+      $routes->post('generateCSVObjectPost', 'DataMahasiswa::generateCSVObjectPost');
+      $routes->post('importCSVItemPost', 'DataMahasiswa::importCSVItemPost');
+      $routes->post('deleteSelectedMahasiswa', 'DataMahasiswa::deleteSelectedMahasiswa');
    });
 
 
-   // admin lihat data guru
-   $routes->get('guru', 'Admin\DataGuru::index');
-   $routes->post('guru', 'Admin\DataGuru::ambilDataGuru');
-   // admin tambah data guru
-   $routes->get('guru/create', 'Admin\DataGuru::formTambahGuru');
-   $routes->post('guru/create', 'Admin\DataGuru::saveGuru');
-   // admin edit data guru
-   $routes->get('guru/edit/(:any)', 'Admin\DataGuru::formEditGuru/$1');
-   $routes->post('guru/edit', 'Admin\DataGuru::updateGuru');
-   // admin hapus data guru
-   $routes->delete('guru/delete/(:any)', 'Admin\DataGuru::delete/$1');
+   // admin lihat data dosen
+   $routes->get('dosen', 'Admin\DataDosen::index');
+   $routes->post('dosen', 'Admin\DataDosen::ambilDataDosen');
+   // admin tambah data dosen
+   $routes->get('dosen/create', 'Admin\DataDosen::formTambahDosen');
+   $routes->post('dosen/create', 'Admin\DataDosen::saveDosen');
+   // admin edit data dosen
+   $routes->get('dosen/edit/(:any)', 'Admin\DataDosen::formEditDosen/$1');
+   $routes->post('dosen/edit', 'Admin\DataDosen::updateDosen');
+   // admin hapus data dosen
+   $routes->delete('dosen/delete/(:any)', 'Admin\DataDosen::delete/$1');
 
 
-   // admin lihat data absen siswa
-   $routes->get('absen-siswa', 'Admin\DataAbsenSiswa::index');
-   $routes->post('absen-siswa', 'Admin\DataAbsenSiswa::ambilDataSiswa'); // ambil siswa berdasarkan kelas dan tanggal
-   $routes->post('absen-siswa/kehadiran', 'Admin\DataAbsenSiswa::ambilKehadiran'); // ambil kehadiran siswa
-   $routes->post('absen-siswa/edit', 'Admin\DataAbsenSiswa::ubahKehadiran'); // ubah kehadiran siswa
+   // admin lihat data absen mahasiswa
+   $routes->get('absen-mahasiswa', 'Admin\DataAbsenMahasiswa::index');
+   $routes->post('absen-mahasiswa', 'Admin\DataAbsenMahasiswa::ambilDataMahasiswa'); // ambil mahasiswa berdasarkan kelas dan tanggal
+   $routes->post('absen-mahasiswa/kehadiran', 'Admin\DataAbsenMahasiswa::ambilKehadiran'); // ambil kehadiran mahasiswa
+   $routes->post('absen-mahasiswa/edit', 'Admin\DataAbsenMahasiswa::ubahKehadiran'); // ubah kehadiran mahasiswa
 
-   // admin lihat data absen guru
-   $routes->get('absen-guru', 'Admin\DataAbsenGuru::index');
-   $routes->post('absen-guru', 'Admin\DataAbsenGuru::ambilDataGuru'); // ambil guru berdasarkan tanggal
-   $routes->post('absen-guru/kehadiran', 'Admin\DataAbsenGuru::ambilKehadiran'); // ambil kehadiran guru
-   $routes->post('absen-guru/edit', 'Admin\DataAbsenGuru::ubahKehadiran'); // ubah kehadiran guru
+   // admin lihat data absen dosen
+   $routes->get('absen-dosen', 'Admin\DataAbsenDosen::index');
+   $routes->post('absen-dosen', 'Admin\DataAbsenDosen::ambilDataDosen'); // ambil dosen berdasarkan tanggal
+   $routes->post('absen-dosen/kehadiran', 'Admin\DataAbsenDosen::ambilKehadiran'); // ambil kehadiran dosen
+   $routes->post('absen-dosen/edit', 'Admin\DataAbsenDosen::ubahKehadiran'); // ubah kehadiran dosen
 
    // admin generate QR
    $routes->get('generate', 'Admin\GenerateQR::index');
-   $routes->post('generate/siswa-by-kelas', 'Admin\GenerateQR::getSiswaByKelas'); // ambil siswa berdasarkan kelas
+   $routes->post('generate/mahasiswa-by-matkul', 'Admin\GenerateQR::getSiswaByMatkul'); // ambil siswa berdasarkan kelas
 
    // Generate QR
-   $routes->post('generate/siswa', 'Admin\QRGenerator::generateQrSiswa');
-   $routes->post('generate/guru', 'Admin\QRGenerator::generateQrGuru');
+   $routes->post('generate/mahasiswa', 'Admin\QRGenerator::generateQrMahasiswa');
+   $routes->post('generate/dosen', 'Admin\QRGenerator::generateQrDosen');
 
    // Download QR
-   $routes->get('qr/siswa/download', 'Admin\QRGenerator::downloadAllQrSiswa');
-   $routes->get('qr/siswa/(:any)/download', 'Admin\QRGenerator::downloadQrSiswa/$1');
-   $routes->get('qr/guru/download', 'Admin\QRGenerator::downloadAllQrGuru');
-   $routes->get('qr/guru/(:any)/download', 'Admin\QRGenerator::downloadQrGuru/$1');
+   $routes->get('qr/mahasiswa/download', 'Admin\QRGenerator::downloadAllQrMahasiswa');
+   $routes->get('qr/mahasiswa/(:any)/download', 'Admin\QRGenerator::downloadQrMahasiswa/$1');
+   $routes->get('qr/dosen/download', 'Admin\QRGenerator::downloadAllQrDosen');
+   $routes->get('qr/dosen/(:any)/download', 'Admin\QRGenerator::downloadQrDosen/$1');
 
    // admin buat laporan
    $routes->get('laporan', 'Admin\GenerateLaporan::index');
-   $routes->post('laporan/siswa', 'Admin\GenerateLaporan::generateLaporanSiswa');
-   $routes->post('laporan/guru', 'Admin\GenerateLaporan::generateLaporanGuru');
+   $routes->post('laporan/mahasiswa', 'Admin\GenerateLaporan::generateLaporanMahasiswa');
+   $routes->post('laporan/dosen', 'Admin\GenerateLaporan::generateLaporanDosen');
 
    // superadmin lihat data petugas
    $routes->get('petugas', 'Admin\DataPetugas::index');
@@ -161,7 +161,7 @@ $routes->group('admin', function (RouteCollection $routes) {
 });
 
 // Teacher
-$routes->group('teacher', ['namespace' => 'App\Controllers\Teacher', 'filter' => 'login'], function (RouteCollection $routes) {
+$routes->group('lecture', ['namespace' => 'App\Controllers\Lecture', 'filter' => 'login'], function (RouteCollection $routes) {
    $routes->get('/', 'Dashboard::index');
    $routes->get('dashboard', 'Dashboard::index');
    $routes->get('laporan', 'Reports::index');

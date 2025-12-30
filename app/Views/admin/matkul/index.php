@@ -13,7 +13,7 @@
                   <div class="row">
                     <div class="col-md-4 col-lg-5">
                       <h4 class="card-title"><b>Daftar Mata Kuliah/b></h4>
-                      <p class="card-category">Angkatan <?= $generalSettings->school_year; ?></p>
+                      <p class="card-category">Angkatan <?= $generalSettings->tahun_ajaran; ?></p>
                     </div>
 
                     <div class="col-auto row">
@@ -45,7 +45,7 @@
                   <div class="row">
                     <div class="col-md-4 col-lg-5">
                       <h4 class="card-title"><b>Daftar Jurusan</b></h4>
-                      <p class="card-category">Angkatan <?= $generalSettings->school_year; ?></p>
+                      <p class="card-category">Angkatan <?= $generalSettings->tahun_ajaran; ?></p>
                     </div>
                     <div class="col-auto row">
                       <div class="col-12 col-sm-auto nav nav-tabs">

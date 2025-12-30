@@ -58,10 +58,10 @@
               <div class="col-md-6">
                 <label for="id_dosen">Dosen Pembimbing</label>
                 <select class="custom-select <?= invalidFeedback('id_dosbing') ? 'is-invalid' : ''; ?>"
-                  id="id_dosbing" name="id_dosbing">
+                  id="id_dosbing" name="id_dosen">
                   <option value="">--Pilih Dosen Pembimbing--</option>
                   <?php foreach ($dosen as $value): ?>
-                    <option value="<?= $value['id_dosen']; ?>" <?= $kelas->id_dosbing == $value['id_dosen'] ? 'selected' : ''; ?>>
+                    <option value="<?= $value['id_dosen']; ?>" <?= $matkul->id_dosbing == $value['id_dosen'] ? 'selected' : ''; ?>>
                       <?= $value['nama_dosen']; ?>
                     </option>
                   <?php endforeach; ?>

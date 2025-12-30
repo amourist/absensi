@@ -16,12 +16,12 @@
               <div class="row">
                 <div class="col-md-6">
                   <div class="form-group mt-4">
-                    <label for="tingkat">Semester</label>
+                    <label for="semester">Semester</label>
                     <input type="text" id="semester"
                       class="form-control <?= invalidFeedback('semester') ? 'is-invalid' : ''; ?>" name="semester"
                       placeholder="'X', 'XI', 'XII'" value="<?= old('semester') ?>" required>
                     <div class="invalid-feedback">
-                      <?= invalidFeedback('tingkat'); ?>
+                      <?= invalidFeedback('semester'); ?>
                     </div>
                   </div>
                 </div>

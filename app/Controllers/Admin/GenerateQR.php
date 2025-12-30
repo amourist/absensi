@@ -32,7 +32,7 @@ class GenerateQR extends BaseController
 
 
       $mahasiswa = $this->mahasiswaModel->getAllMahasiswaWithmatkul();
-      $matkul = $this->matkulModel->getDataKelas();
+      $matkul = $this->matkulModel->getDataMatkul();
       $dosen = $this->dosenModel->getAllDosen();
 
       $data = [
@@ -46,7 +46,7 @@ class GenerateQR extends BaseController
       return view('admin/generate-qr/generate-qr', $data);
    }
 
-   public function getSiswaByKelas()
+   public function getSiswaByMatkul()
    {
       $idMatkul = $this->request->getVar('idMatkul');
 
