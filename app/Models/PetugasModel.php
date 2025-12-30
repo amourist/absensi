@@ -42,7 +42,7 @@ class PetugasModel extends Model
          'username' => $username,
          'password_hash' => $passwordHash,
          'is_superadmin' => $role ?? '0',
-         'id_guru' => $id_dosen,
+         'id_dosen' => $id_dosen,
          'active' => $active
       ]);
    }

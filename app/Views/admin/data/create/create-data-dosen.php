@@ -22,7 +22,7 @@
                      </div>
                   <?php endif; ?>
 
-                  <form action="<?= base_url('admin/guru/create'); ?>" method="post">
+                  <form action="<?= base_url('admin/dosen/create'); ?>" method="post">
                      <?= csrf_field() ?>
                      <?php $validation = \Config\Services::validation(); ?>
 

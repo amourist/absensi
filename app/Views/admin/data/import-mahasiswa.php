@@ -13,7 +13,7 @@
                                 <div class="nav-tabs-navigation">
                                     <div class="row">
                                         <div class="col-md-4 col-lg-5">
-                                            <h4 class="card-title"><b>Bulk Post Upload Siswa</b></h4>
+                                            <h4 class="card-title"><b>Bulk Post Upload Mahasiswa</b></h4>
                                             <p class="card-category">Semester <?= $generalSettings->tahun_ajaran; ?></p>
                                         </div>
                                     </div>
@@ -174,7 +174,7 @@
                 success: function(response) {
                     var objSub = JSON.parse(response);
                     if (objSub.result == 1) {
-                        $("#csv_uploaded_files").prepend('<li class="list-group-item list-group-item-success">&nbsp;' + objSub.index + '.&nbsp;' + objSub.siswa.nis + '.&nbsp; - ' + objSub.siswa.nama_siswa +'</li>');
+                        $("#csv_uploaded_files").prepend('<li class="list-group-item list-group-item-success">&nbsp;' + objSub.index + '.&nbsp;' + objSub.mahasiswa.nis + '.&nbsp; - ' + objSub.mahasiswa.nama_mahasiswa +'</li>');
                     } else {
                         $("#csv_uploaded_files").prepend('<li class="list-group-item list-group-item-danger">&nbsp;' + objSub.index + '.</li>');
                     }

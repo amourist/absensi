@@ -40,7 +40,7 @@ class DataMahasiswa extends BaseController
       'jk' => ['rules' => 'required', 'errors' => ['required' => 'Jenis kelamin wajib diisi']],
       'no_hp' => 'required|numeric|max_length[20]|min_length[5]',
       'rfid' => [
-         'rules' => 'permit_empty|is_rfid_unique[,siswa]',
+         'rules' => 'permit_empty|is_rfid_unique[,mahasiswa]',
          'errors' => [
             'is_rfid_unique' => 'RFID code sudah digunakan.'
          ]

@@ -29,7 +29,7 @@ class DataDosen extends BaseController
       'jk' => ['rules' => 'required', 'errors' => ['required' => 'Jenis kelamin wajib diisi']],
       'no_hp' => 'required|numeric|max_length[20]|min_length[5]',
       'rfid' => [
-         'rules' => 'permit_empty|is_rfid_unique[,guru]',
+         'rules' => 'permit_empty|is_rfid_unique[,dosen]',
          'errors' => [
             'is_rfid_unique' => 'RFID code sudah digunakan.'
          ]
@@ -167,14 +167,14 @@ class DataDosen extends BaseController
             'msg' => 'Edit data berhasil',
             'error' => false
          ]);
-         return redirect()->to('/admin/guru');
+         return redirect()->to('/admin/dosen');
       }
 
       session()->setFlashdata([
          'msg' => 'Gagal mengubah data',
          'error' => true
       ]);
-      return redirect()->to('/admin/guru/edit/' . $idDosen);
+      return redirect()->to('/admin/dosen/edit/' . $idDosen);
    }
 
    public function delete($id)
@@ -193,6 +193,6 @@ class DataDosen extends BaseController
          'msg' => 'Gagal menghapus data',
          'error' => true
       ]);
-      return redirect()->to('/admin/guru');
+      return redirect()->to('/admin/dosen');
    }
 }

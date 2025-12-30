@@ -44,7 +44,7 @@
 
    <?php $i = 0; ?>
 
-   <?php foreach ($listSiswa as $siswa): ?>
+   <?php foreach ($listMahasiswa as $mahasiswa): ?>
       <?php
       $jumlahHadir = count(array_filter($listAbsen, function ($a) use ($i) {
          if ($a['lewat'] || is_null($a[$i]['id_kehadiran']))
@@ -71,7 +71,7 @@
       ?>
       <tr>
          <td align="center"><?= $i + 1; ?></td>
-         <td><?= $siswa['nama_mahasiswa']; ?></td>
+         <td><?= $mahasiswa['nama_mahasiswa']; ?></td>
          <?php foreach ($listAbsen as $absen): ?>
             <?= kehadiran($absen[$i]['id_kehadiran'] ?? ($absen['lewat'] ? 5 : 4)); ?>
          <?php endforeach; ?>

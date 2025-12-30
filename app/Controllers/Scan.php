@@ -32,7 +32,7 @@ class Scan extends BaseController
     {
         return view('scan/scan', [
             'waktu' => $t,
-            'title' => 'Absensi Siswa dan Guru Berbasis QR Code'
+            'title' => 'Absensi Mahasiswa dan Dosen Berbasis QR Code'
         ]);
     }
 

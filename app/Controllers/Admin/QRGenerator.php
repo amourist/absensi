@@ -190,7 +190,7 @@ class QRGenerator extends BaseController
       }
    }
 
-   public function downloadQrGuru($idDosen = null)
+   public function downloadQrDosen($idDosen = null)
    {
       $dosen = (new DosenModel)->find($idDosen);
       if (!$dosen) {

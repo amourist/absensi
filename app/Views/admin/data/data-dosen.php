@@ -28,14 +28,14 @@
                                  <div class="col-12 col-sm-auto nav nav-tabs">
                                     <div class="nav-item">
                                        <a class="nav-link" id="tabBtn" onclick="removeHover()" href="<?= base_url('admin/dosen/create'); ?>">
-                                          <i class="material-icons">add</i> Tambah data guru
+                                          <i class="material-icons">add</i> Tambah data dosen
                                           <div class="ripple-container"></div>
                                        </a>
                                     </div>
                                  </div>
                                  <div class="col-12 col-sm-auto nav nav-tabs">
                                     <div class="nav-item">
-                                       <a class="nav-link" id="refreshBtn" onclick="getDataGuru()" href="#" data-toggle="tab">
+                                       <a class="nav-link" id="refreshBtn" onclick="getDataDosen()" href="#" data-toggle="tab">
                                           <i class="material-icons">refresh</i> Refresh
                                           <div class="ripple-container"></div>
                                        </a>
@@ -66,7 +66,7 @@
          data: {},
          success: function(response, status, xhr) {
             // console.log(status);
-            $('#dataGuru').html(response);
+            $('#dataDosen').html(response);
 
             $('html, body').animate({
                scrollTop: $("#dataDosen").offset().top
