@@ -6,8 +6,8 @@
       <td><img src="<?= getLogo(); ?>" width="100px" height="100px"></img></td>
       <td width="100%">
          <h2 align="center">DAFTAR HADIR MAHASISWA</h2>
-         <h4 align="center"><?= $generalSettings->school_name; ?></h4>
-         <h4 align="center">TAHUN AJARAN <?= $generalSettings->school_year; ?></h4>
+         <h4 align="center"><?= $generalSettings->nama_prodi; ?></h4>
+         <h4 align="center">TAHUN AJARAN <?= $generalSettings->tahun_ajaran; ?></h4>
       </td>
       <td>
          <div style="width:100px"></div>
@@ -44,7 +44,7 @@
 
    <?php $i = 0; ?>
 
-   <?php foreach ($listSiswa as $siswa): ?>
+   <?php foreach ($listMahasiswa as $mahasiswa): ?>
       <?php
       $jumlahHadir = count(array_filter($listAbsen, function ($a) use ($i) {
          if ($a['lewat'] || is_null($a[$i]['id_kehadiran']))
