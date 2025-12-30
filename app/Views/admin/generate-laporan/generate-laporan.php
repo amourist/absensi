@@ -41,9 +41,9 @@
                                        value="<?= date('Y-m'); ?>">
                                  </div>
                               </div>
-                              <select name="kelas" class="custom-select mt-3">
+                              <select name="matkul" class="custom-select mt-3">
                                  <option value="">--Pilih mata kuliah--</option>
-                                 <?php foreach ($kelas as $key => $value): ?>
+                                 <?php foreach ($matkul as $key => $value): ?>
                                     <?php
                                     $idMatkul = $value['id_matkul'];
                                     $namaMatkul = $value['matkul'];
