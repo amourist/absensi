@@ -9,7 +9,7 @@
                   <div class="pt-3 pl-3 pb-2">
                      <h4><b>Tanggal</b></h4>
                      <input class="form-control" type="date" name="tanggal" id="tanggal"
-                        value="<?= $date; ?>" onchange="getMahasiswa(<?= $kelas['id_matkul']; ?>, '<?= $matkul['matkul']; ?>')">
+                        value="<?= $date; ?>" onchange="getMahasiswa(<?= $matkul['id_matkul']; ?>, '<?= $matkul['matkul']; ?>')">
                   </div>
                </div>
             </div>
@@ -43,18 +43,18 @@
 </div>
 
 <script>
-    var lastIdMatkul = <?= $kelas['id_matkul']; ?>;
+    var lastIdMatkul = <?= $matkul['id_matkul']; ?>;
     var lastMatkul = '<?= $matkul['matkul']; ?>';
 
    $(document).ready(function() {
        getSiswa(lastIdMatkul, lastMatkul);
    });
 
-   function getSiswa(lastIdMatkul, matkul) {
+   function getMahasiswa(lastIdMatkul, matkul) {
       var tanggal = $('#tanggal').val();
 
       jQuery.ajax({
-         url: "<?= base_url('/teacher/attendance/get-list'); ?>",
+         url: "<?= base_url('/lecture/attendance/get-list'); ?>",
          type: 'post',
          data: {
             'matkul': matkul,

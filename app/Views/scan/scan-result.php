@@ -3,14 +3,14 @@
 use App\Libraries\enums\TipeUser;
 
 switch ($type) {
-   case TipeUser::Siswa:
+   case TipeUser::Mahasiswa:
       ?>
       <h3 class="text-success">Absen <?= $waktu; ?> berhasil</h3>
       <div class="row w-100">
          <div class="col">
-            <p>Nama : <b><?= $data['nama_siswa']; ?></b></p>
-            <p>NIS : <b><?= $data['nis']; ?></b></p>
-            <p>Kelas : <b><?= $data['kelas']; ?></b></p>
+            <p>Nama : <b><?= $data['nama_mahasiswa']; ?></b></p>
+            <p>NIM : <b><?= $data['nim']; ?></b></p>
+            <p>Matkul : <b><?= $data['matkul']; ?></b></p>
          </div>
          <div class="col">
             <?= jam($presensi); ?>
@@ -18,13 +18,13 @@ switch ($type) {
       </div>
       <?php break;
 
-   case TipeUser::Guru:
+   case TipeUser::Dosen:
       ?>
       <h3 class="text-success">Absen <?= $waktu; ?> berhasil</h3>
       <div class="row w-100">
          <div class="col">
-            <p>Nama : <b><?= $data['nama_guru']; ?></b></p>
-            <p>NUPTK : <b><?= $data['nuptk']; ?></b></p>
+            <p>Nama : <b><?= $data['nama_dosen']; ?></b></p>
+            <p>NIP : <b><?= $data['nip']; ?></b></p>
             <p>No HP : <b><?= $data['no_hp']; ?></b></p>
          </div>
          <div class="col">

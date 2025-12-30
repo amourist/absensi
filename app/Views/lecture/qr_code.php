@@ -96,13 +96,13 @@
                                                 </thead>
                                                 <tbody>
                                                     <?php $i = 1;
-                                                    foreach ($siswa as $s): ?>
+                                                    foreach ($mahasiswa as $m): ?>
                                                         <tr>
                                                             <td><?= $i++; ?></td>
-                                                            <td><?= $s['nim']; ?></td>
-                                                            <td><?= $s['nama_mahasiswa']; ?></td>
+                                                            <td><?= $m['nim']; ?></td>
+                                                            <td><?= $m['nama_mahasiswa']; ?></td>
                                                             <td class="text-center">
-                                                                <a href="<?= base_url('admin/qr/mahasiswa/' . $s['id_mahasiswa'] . '/download'); ?>"
+                                                                <a href="<?= base_url('admin/qr/mahasiswa/' . $m['id_mahasiswa'] . '/download'); ?>"
                                                                     class="btn btn-info btn-sm">
                                                                     <i class="material-icons">download</i> Download QR
                                                                 </a>
@@ -123,53 +123,49 @@
     </div>
 </div>
 <script>
-    const dataMahasiswa = [
-        <?php foreach ($mahasiswa as $value) {
-            echo "{
-              'nama' : `$value[nama_mahasiswa]`,
-              'unique_code' : `$value[unique_code]`,
-              'id_matkul' : `$value[id_matkul`,
-              'nomor' : `$value[nim]`
-            },";
-        }
-        ; ?>
-    ];
+    const dataMahasiswa = <?= json_encode($mahasiswa, JSON_UNESCAPED_UNICODE); ?>;
 
     function generateAllQrSiswa() {
-        var i = 1;
+        let i = 1;
+
         $('#progressMahasiswa').removeClass('d-none');
         $('#progressBarMahasiswa')
-            .attr('aria-valuenow', '0')
-            .attr('aria-valuemin', '0')
+            .attr('aria-valuenow', 0)
+            .attr('aria-valuemin', 0)
             .attr('aria-valuemax', dataMahasiswa.length)
-            .attr('style', 'width: 0%;');
+            .css('width', '0%');
 
-        dataSiswa.forEach(element => {
-            jQuery.ajax({
+        dataMahasiswa.forEach(mhs => {
+            $.ajax({
                 url: "<?= base_url('admin/generate/mahasiswa'); ?>",
-                type: 'post',
+                type: "post",
                 data: {
-                    nama: element['nama'],
-                    unique_code: element['unique_code'],
-                    id_kelas: element['id_matkul'],
-                    nomor: element['nomor']
+                    nama: mhs.nama_mahasiswa,
+                    unique_code: mhs.unique_code,
+                    id_matkul: mhs.id_matkul,
+                    nomor: mhs.nim
                 },
-                success: function (response) {
-                    if (!response) return;
-                    if (i != dataMahasiswa.length) {
-                        $('#progressTextMahasiswa').html('Progres: ' + i + '/' + dataMahasiswa.length);
-                    } else {
-                        $('#progressTextMahasiswa').html('Progres: ' + i + '/' + dataMahasiswa.length + ' selesai');
-                        $('#progressSelesaiMahasiswa').removeClass('d-none');
-                    }
+                success: function () {
+                    $('#progressTextMahasiswa').text(
+                        'Progres: ' + i + '/' + dataMahasiswa.length
+                    );
 
                     $('#progressBarMahasiswa')
                         .attr('aria-valuenow', i)
-                        .attr('style', 'width: ' + (i / dataMahasiswa.length) * 100 + '%;');
+                        .css('width', (i / dataMahasiswa.length * 100) + '%');
+
+                    if (i === dataMahasiswa.length) {
+                        $('#progressSelesaiMahasiswa').removeClass('d-none');
+                        $('#progressTextMahasiswa').text(
+                            'Progres: ' + i + '/' + dataMahasiswa.length + ' selesai'
+                        );
+                    }
+
                     i++;
                 }
             });
         });
     }
 </script>
+
 <?= $this->endSection() ?>
