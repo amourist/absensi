@@ -88,10 +88,10 @@ class Dashboard extends BaseController
          'title' => 'Dashboard',
          'ctx' => 'dashboard',
 
-         'siswa' => $this->mahasiswaModel->getAllMahasiswaWithmatkul(),
-         'guru' => $this->dosenModel->getAllDosen(),
+         'mahasiswa' => $this->mahasiswaModel->getAllMahasiswaWithmatkul(),
+         'dosen' => $this->dosenModel->getAllDosen(),
 
-         'kelas' => $this->MatkulModel->getDataMatkul(),
+         'matkul' => $this->MatkulModel->getDataMatkul(),
 
          'dateRange' => $dateRange,
          'dateNow' => $now->toLocalizedString('d MMMM Y'),
@@ -106,7 +106,7 @@ class Dashboard extends BaseController
             'alfa' => count($this->presensiMahasiswaModel->getPresensiByKehadiran('4', $today))
          ],
 
-         'jumlahKehadiranGuru' => [
+         'jumlahKehadiranDosen' => [
             'hadir' => count($this->presensiDosenModel->getPresensiByKehadiran('1', $today)),
             'sakit' => count($this->presensiDosenModel->getPresensiByKehadiran('2', $today)),
             'izin' => count($this->presensiDosenModel->getPresensiByKehadiran('3', $today)),
