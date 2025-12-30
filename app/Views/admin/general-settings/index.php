@@ -17,13 +17,13 @@
                                 <label for="nama_prodi">Nama Prodi</label>
                                 <input type="text" id="nama_prodi" class="form-control <?= invalidFeedback('nama_prodi') ? 'is-invalid' : ''; ?>" name="nama_prodi" placeholder="Informatika Peradaban" value="<?= $generalSettings->nama_prodi; ?>" required>
                                 <div class="invalid-feedback">
-                                    <?= invalidFeedback('school_name'); ?>
+                                    <?= invalidFeedback('nama_prodi'); ?>
                                 </div>
                             </div>
 
                             <div class="form-group mt-4">
                                 <label for="tahun_ajaran">Tahun Ajaran</label>
-                                <input type="text" id="tahun_ajaran" class="form-control <?= invalidFeedback('tahun_ajaran') ? 'is-invalid' : ''; ?>" name="tahun_ajaran" placeholder="2024/2025" value="<?= $generalSettings->school_year; ?>" required>
+                                <input type="text" id="tahun_ajaran" class="form-control <?= invalidFeedback('tahun_ajaran') ? 'is-invalid' : ''; ?>" name="tahun_ajaran" placeholder="2024/2025" value="<?= $generalSettings->tahun_ajaran; ?>" required>
                                 <div class="invalid-feedback">
                                     <?= invalidFeedback('tahun_ajaran'); ?>
                                 </div>

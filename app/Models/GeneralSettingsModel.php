@@ -18,8 +18,8 @@ class GeneralSettingsModel extends BaseModel
    public function inputValues()
    {
       return [
-         'school_name' => inputPost('school_name'),
-         'school_year' => inputPost('school_year'),
+         'nama_prodi' => inputPost('nama_prodi'),
+         'tahun_ajaran' => inputPost('tahun_ajaran'),
          'copyright' => inputPost('copyright'),
       ];
    }
