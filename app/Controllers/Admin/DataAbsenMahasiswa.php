@@ -11,7 +11,7 @@ use App\Models\KehadiranModel;
 use App\Models\PresensiMahasiswaModel;
 use CodeIgniter\I18n\Time;
 
-class DataAbsenSiswa extends BaseController
+class DataAbsenMahasiswa extends BaseController
 {
    protected MatkulModel $matkulModel;
 
@@ -38,7 +38,7 @@ class DataAbsenSiswa extends BaseController
 
    public function index()
    {
-      $matkul = $this->matkulModel->getDataKelas();
+      $matkul = $this->matkulModel->getDataMatkul();
 
       $data = [
          'title' => 'Data Absen Mahasiswa',

@@ -20,7 +20,7 @@
                         <?php foreach ($matkul as $value): ?>
                            <?php
                            $idMatkul = $value['id_matkul'];
-                           $namaMatkul = $value['mamtkul'];
+                           $namaMatkul = $value['matkul'];
                            ?>
                            <div class="col-md-3">
                               <button id="matkul-<?= $idMatkul; ?>"

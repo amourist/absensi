@@ -69,7 +69,7 @@ class DataMahasiswa extends BaseController
          'jurusan' => $this->jurusanModel->getDataJurusan()
       ];
 
-      return view('admin/data/data-matkul', $data);
+      return view('admin/data/data-mahasiswa', $data);
    }
 
    public function ambilDataMahasiswa()
@@ -77,7 +77,7 @@ class DataMahasiswa extends BaseController
       $matkul = $this->request->getVar('matkul') ?? null;
       $jurusan = $this->request->getVar('jurusan') ?? null;
 
-      $result = $this->mahasiswaModel->getAllMahasiswaWithKelas($matkul, $jurusan);
+      $result = $this->mahasiswaModel->getAllMahasiswaWithMatkul($matkul, $jurusan);
 
       $data = [
          'data' => $result,
@@ -108,7 +108,7 @@ class DataMahasiswa extends BaseController
 
          $data = [
             'ctx' => 'mahasiswa',
-            'kelas' => $matkul,
+            'matkul' => $matkul,
             'title' => 'Tambah Data Mahasiswa',
             'validation' => $this->validator,
             'oldInput' => $this->request->getVar()
@@ -168,7 +168,7 @@ class DataMahasiswa extends BaseController
 
       $mahasiswaLama = $this->mahasiswaModel->getMahasiswaById($idMahasiswa);
 
-      if ($mahasiswaLama['nim'] != $this->request->getVar('nis')) {
+      if ($mahasiswaLama['nim'] != $this->request->getVar('nim')) {
          $this->mahasiswaValidationRules['nim']['rules'] = 'required|max_length[20]|min_length[4]|is_unique[tb_mahasiswa.nim]';
       }
 
