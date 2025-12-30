@@ -147,12 +147,12 @@
                         <div class="ct-chart" id="kehadiranMahasiswa"></div>
                     </div>
                     <div class="card-body">
-                        <h4 class="card-title">Tingkat kehadiran siswa</h4>
+                        <h4 class="card-title">Tingkat kehadiran Mahasiswa</h4>
                         <p class="card-category">Jumlah kehadiran siswa dalam 7 hari terakhir</p>
                     </div>
                     <div class="card-footer">
                         <div class="stats">
-                            <i class="material-icons text-primary">checklist</i> <a class="text-primary" href="<?= base_url('admin/absen-siswa'); ?>">Lihat data</a>
+                            <i class="material-icons text-primary">checklist</i> <a class="text-primary" href="<?= base_url('admin/absen-mahasiswa'); ?>">Lihat data</a>
                         </div>
                     </div>
                 </div>
@@ -160,15 +160,15 @@
             <div class="col-md-6">
                 <div class="card card-chart">
                     <div class="card-header card-header-success">
-                        <div class="ct-chart" id="kehadiranGuru"></div>
+                        <div class="ct-chart" id="kehadiranDosen"></div>
                     </div>
                     <div class="card-body">
-                        <h4 class="card-title">Tingkat kehadiran guru</h4>
+                        <h4 class="card-title">Tingkat kehadiran dosen</h4>
                         <p class="card-category">Jumlah kehadiran guru dalam 7 hari terakhir</p>
                     </div>
                     <div class="card-footer">
                         <div class="stats">
-                            <i class="material-icons text-success">checklist</i> <a class="text-success" href="<?= base_url('admin/absen-guru'); ?>">Lihat data</a>
+                            <i class="material-icons text-success">checklist</i> <a class="text-success" href="<?= base_url('admin/absen-dosen'); ?>">Lihat data</a>
                         </div>
                     </div>
                 </div>

@@ -123,7 +123,7 @@ $routes->group('admin', function (RouteCollection $routes) {
 
    // admin generate QR
    $routes->get('generate', 'Admin\GenerateQR::index');
-   $routes->post('generate/mahasiswa-by-matkul', 'Admin\GenerateQR::getSiswaByMatkul'); // ambil siswa berdasarkan kelas
+   $routes->post('generate/mahasiswa-by-matkul', 'Admin\GenerateQR::getMahasiswaByMatkul'); // ambil siswa berdasarkan kelas
 
    // Generate QR
    $routes->post('generate/mahasiswa', 'Admin\QRGenerator::generateQrMahasiswa');
